@@ -9,26 +9,25 @@ not a modern compiler.
 | Role | Tool |
 |------|------|
 | Host OS | MS-DOS (or a compatible DOS environment) |
-| Compiler / IDE | Borland C++ |
+| Compiler / IDE | Borland C++ 3.1 |
 | Assembler | Turbo Assembler (TASM), for `VIDEO.ASM` |
 | Project file | `MODICOM.PRJ` (Turbo C / Borland IDE project format) |
 | Desktop state | `MODICOM.DSK` (Borland IDE desktop file) |
 
 ### Compiler version
 
-This snapshot was built with **Borland C++**. The shipped executable
-embeds the string `Borland C++ - Copyright 1991 Borland Intl.`, and
-`MODICOM.PRJ` is a Turbo C–format project file (also used by Borland
-C++).
+This version has been successfully rebuilt from the sources on this
+branch using **Borland C++ 3.1** on DOS, with Turbo Assembler for
+`VIDEO.ASM`.
 
-A machine archive from the same period suggests **Borland C++ 3.1**
-(c. 1992). That version is the best current match for rebuilding this
-tree, but it has not been independently confirmed beyond the surviving
-artifacts and period context.
+That matches the surviving artifacts: the shipped executable embeds
+`Borland C++ - Copyright 1991 Borland Intl.`, and `MODICOM.PRJ` is a
+Turbo C–format project file (also used by Borland C++). A period
+machine archive likewise pointed at Borland C++ 3.1 (c. 1992).
 
-An earlier origin in Turbo C is possible. Borland C++ continued to
-read Turbo C project files, so a later migration to Borland C++ would
-be consistent with what remains. That earlier history is not verified
+An earlier origin in Turbo C is still possible. Borland C++ continued
+to read Turbo C project files, so a later migration would be
+consistent with what remains. That earlier history is not verified
 from the sources on this branch.
 
 ### Application copyright
@@ -39,10 +38,10 @@ Source files in this version carry:
 Copyright (c) 1994, Orkney Software Ltd
 ```
 
-## How it was built
+## How to build
 
-Open `MODICOM.PRJ` in the Borland C++ IDE and build the project from
-there. The project references:
+Open `MODICOM.PRJ` in the Borland C++ 3.1 IDE and build the project
+from there. The project references:
 
 - `MODICOM.C`
 - `EDITOR.C`
@@ -51,8 +50,11 @@ there. The project references:
 - `VIDEO.ASM` (assembled with TASM)
 
 Include and library paths in the recovered project point at a local
-`C:\C\INCLUDE` and `C:\C\LIB` layout; adjust these to match your
-Borland installation if you rebuild.
+`C:\C\INCLUDE` and `C:\C\LIB` layout. These needed updating to the
+Borland C++ 3.1 installation paths for a successful rebuild.
+
+The compiler binary directory also needed to be on `PATH` so the IDE
+could find TASM when assembling `VIDEO.ASM`.
 
 ## Scope of this document
 
