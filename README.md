@@ -51,13 +51,16 @@ with the historical codebase and may include:
 The original versions were developed for DOS and later Windows
 environments.
 
-Additional details regarding compilers, operating systems and version
-history will be documented in `docs/history.md`.
+This historic branch (`modicom-v1.3`) documents the period toolset in
+`BUILD.md`. Broader version history across releases will be collected
+in `docs/history.md` on the active development line.
 
 ## Building
 
-Build instructions for currently supported platforms can be found in
-the documentation accompanying the active development branch.
+To rebuild this version with the original toolchain, see `BUILD.md`.
+
+Build instructions for currently supported platforms can be found on
+the `main` branch.
 
 ## Historical Note
 
