@@ -113,31 +113,39 @@ PROC    ScPokeLine
 @@10:
 	lodsb                           ; Get next character
 	or	al, al                  ; NULL terminator?
-	jz	@@30                    ; If so, jump
+	jnz	@@20
+	mov	al, '<'
+	jmp	@@50
+@@20:
+	cmp	al, 0dh
+	je	@@10
+	cmp	al, 8dh
+	je	@@40
 	stosw                           ; Otherwise display it
 	loop	@@10                    ; Until max line length
 	mov	al, '+'                 ; Set al to long line
 	stosw                           ; marker & display it
 	mov	cx, 0ffffh              ; Set max search length
-@@20:
+@@30:
 	lodsb                           ; Get next character
 	or	al, al                  ; NULL terminator?
-	jz      @@60                    ; If found, jump
-	loop	@@20                    ; Otherwise repeat
-	jmp	@@60
-@@30:
-	mov	al, 32                  ; Set al to space
+	jz      @@70                    ; If found, jump
+	loop	@@30                    ; Otherwise repeat
+	jmp	@@70
 @@40:
-	rep stosw                       ; Clear to eol
-	cmp     si, bx                  ; End of buffer?
-	ja	@@50                    ; If so, jump
-	mov	al, '<'                 ; Otherwise, set al to
-	stosw                           ; newline maker & display
-	jmp	@@60
+	inc	si
+	mov	al, ' '
 @@50:
-	mov	al, 32                  ; Set al to space
-	stosw                           ; and display it
+	push	ax
+	mov	al, ' '                 ; Set al to space
+	rep stosw                       ; Clear to eol
+	pop	ax
+	cmp     si, bx                  ; End of buffer?
+	jna	@@60
+	mov	al, ' '                 ; Set al to space
 @@60:
+	stosw                           ; and display it
+@@70:
 	ret
 
 ENDP    ScPokeLine
@@ -240,4 +248,3 @@ ENDP	showpage
 
 
 	END                             ; End of module
-

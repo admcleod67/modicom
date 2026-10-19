@@ -1,5 +1,6 @@
 #include <string.h>
 #include <ctype.h>
+#include "strings.h"
 
 
 int replace(char *str, int len, char srch, char repch)
@@ -38,4 +39,28 @@ char *rtrim(char *sce)
    *str = '\0';
 
    return str;
+}
+
+
+int linelen(unsigned char *ptr, unsigned char *start)
+{
+   int len;
+
+   while (*(ptr - 1))
+   {
+      if (ptr == start)
+	 break;
+
+      ptr --;
+   }
+
+   len = 0;
+
+   while (!iseol(*ptr))
+   {
+      ptr ++;
+      len ++;
+   }
+
+   return len;
 }

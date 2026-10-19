@@ -1,14 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <conio.h>
 #include <dos.h>
-
-#define ABORT 0
+#include "editor.h"
 
 
 void showuse(int parameters)
 {
-   printf("\nModiCom Programmer's Editor v1.4\n");
-   printf("Copyright (c) 1994, Orkney Software Ltd\n\n");
+   #ifdef VERSION_M
+      printf("\nModiCom xBase Programmer's Editor v2.0m\n");
+   #else
+      printf("\nModiCom xBase Programmer's Editor v2.0\n");
+   #endif
+
+   printf("Copyright (c) 1994-95 by Orkney Software Ltd\n\n");
 
    if (parameters > 2)
       printf(" Too many parameters!\n  ");
