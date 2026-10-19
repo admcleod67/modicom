@@ -8,24 +8,12 @@
 #include <process.h>
 #include <sys\stat.h>
 #include <string.h>
+#include "editor.h"
 #include "keyboard.h"
 #include "strings.h"
 
 
-#define MAXSEARCH	73
-#define MAXBYTES 49152
-#define MIN_COL	1
-#define MIN_ROW	1
-#define MAX_COL	80
-#define MAX_ROW	17
-#define MAX_LEN 79
-#define BELL	0x07
-#define FALSE	0
-#define TRUE	1
-#define BYTE	char
-
-
-char *start, *ptr, *end, fname[MAXPATH];
+BYTE *start, *ptr, *end, fname[MAXPATH];
 int x, y, lineno, lcount, changed, insert, maxrow, toobig;
 
 extern void showline(char *str, char *end);
@@ -203,49 +191,44 @@ int linedown()
 }
 
 
-void cursup()
+void gotocol(int col)
 {
    int len;
 
+   len = linelen(ptr, start);
+   x = (col > len) ? len + 1 : col;
+   ptr += (x - 1);
+}
+
+
+void cursup()
+{
    if (lineno > 1)
    {
       lineup();
-      len = strlen(ptr);
-      x = (x > len) ? len + 1: x;
-      ptr += (x - 1);
+      gotocol(x);
    }
 }
 
 
-int cursdown()
+void cursdown()
 {
-   int len;
-
    if (lineno < lcount)
    {
       linedown();
-      len = strlen(ptr);
-      x = (x > len) ? len + 1: x;
-      ptr += (x - 1);
+      gotocol(x);
    }
-
-   return 1;
 }
 
 
 void cursleft()
 {
-   char *str;
-   int len;
-
    if (ptr != start)
    {
       if (!*(ptr - 1))
       {
 	 lineup();
-	 len = strlen(ptr);
-	 x = (len < 80) ? len + 1: 80;
-	 ptr += (x - 1);
+	 gotocol(80);
       }
       else
       {
@@ -260,7 +243,7 @@ void cursright()
 {
    if ((ptr != end) && (x < 80))
    {
-      if (!*ptr)
+      if (iseol(*ptr))
       {
 	 linedown();
 	 x = 1;
@@ -345,7 +328,7 @@ void inschar(int ch)
 {
    if (!iscntrl(ch))
    {
-      if (insert || !*ptr)
+      if (insert || iseol(*ptr))
       {
 	 if ((x < 80) && (end < (start + MAXBYTES)))
 	 {
@@ -362,7 +345,7 @@ void inschar(int ch)
       }
       else
       {
-	 if (*ptr && x < 80)
+	 if (!iseol(*ptr) && x < 80)
 	 {
 	    *ptr = ch;
 	    showline(ptr, end);
@@ -401,20 +384,6 @@ void scrollup()
       gotoxy(1, i);
       showline(str, end);
    }
-}
-
-
-int linelen(char *ptr, char *start)
-{
-   while (*(ptr - 1))
-   {
-      if (ptr == start)
-	 break;
-
-      ptr --;
-   }
-
-   return strlen(ptr);
 }
 
 
@@ -463,12 +432,15 @@ void newline(int insert)
 {
    if (insert || (ptr == end))
    {
-      if (end < (start + MAXBYTES))
+      if ((end + 1) < (start + MAXBYTES))
       {
 
-	 memmove(ptr + 1, ptr, (end - ptr) + 1);
-	 *ptr = '\0';
-	 showline(ptr ++, ++ end);
+	 memmove(ptr + 2, ptr, (end - ptr) + 1);
+	 *ptr = '\r';
+	 *(ptr + 1) = '\0';
+	 end += 2;
+	 showline(ptr, end);
+	 ptr += 2;
 	 lineno ++;
 	 lcount ++;
 	 x = MIN_COL;
@@ -502,19 +474,21 @@ void newline(int insert)
 
 void addline()
 {
-   if (end < (start + MAXBYTES))
+   if ((end + 1) < (start + MAXBYTES))
    {
 
-      memmove(ptr + 1, ptr, (end - ptr) + 1);
-      *ptr = '\0';
-      showline(ptr, ++ end);
+      memmove(ptr + 2, ptr, (end - ptr) + 1);
+      *ptr = '\r';
+      *(ptr + 1) = '\0';
+      end += 2;
+      showline(ptr, end);
       lcount ++;
 
       if (y != maxrow)
       {
 	 gotoxy(MIN_COL, y + 1);
 	 insline();
-	 showline(ptr + 1, end);
+	 showline(ptr + 2, end);
       }
 
       changed = TRUE;
@@ -528,14 +502,21 @@ void textwrite(char *fname)
    char *ptr;
 
    replace(start, end - start, '\0', '\n');
-   *end = 0x1a;
 
-   out = open(fname, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, S_IWRITE);
+   #ifndef VERSION_M
+      *end = 0x1a;
+   #endif
+
+   out = open(fname, O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, S_IWRITE);
 
    if (out == -1)
       msg("Unable to write file (press SPACE) ");
 
-   write(out, start, end - start + 1);
+   #ifdef VERSION_M
+      write(out, start, end - start);
+   #else
+      write(out, start, end - start + 1);
+   #endif
 
    close(out);
 }
@@ -573,12 +554,11 @@ void backspace()
 
    if (ptr != start)
    {
-      memmove(ptr - 1, ptr, (end - ptr) + 1);
-      ptr --;
-      end --;
-
       if (x == MIN_COL)
       {
+	 memmove(ptr - 2, ptr, (end - ptr) + 1);
+	 ptr -= 2;
+	 end -= 2;
 	 str = ptr;
 
 	 while (*(str - 1))
@@ -609,9 +589,10 @@ void backspace()
       }
       else
       {
+	 memmove(ptr - 1, ptr, (end - ptr) + 1);
 	 x --;
 	 gotoxy(x, y);
-	 showline(ptr, end);
+	 showline(-- ptr, -- end);
       }
       changed = TRUE;
    }
@@ -622,39 +603,51 @@ void delchar()
 {
    int len;
 
-   if (ptr != end)
-   {
-      len = linelen(ptr, start);
-      memmove(ptr, ptr + 1, end - ptr);
-      showline(ptr, -- end);
+   len = linelen(ptr, start);
 
-      if (x > len)
+   if (x > len)
+   {
+      if ((ptr + 1) != end)
       {
+	 memmove(ptr, ptr + 2, end - ptr);
+	 end -= 2;
+	 showline(ptr, end);
 	 lcount --;
+
 	 if (y != maxrow)
 	 {
 	    scrollup();
 	    gotoxy(x, y);
 	 }
-      }
 
-      changed = TRUE;
+	 changed = TRUE;
+       }
+   }
+   else
+   {
+      if (ptr != end)
+      {
+	 memmove(ptr, ptr + 1, end - ptr);
+	 showline(ptr, -- end);
+
+	 changed = TRUE;
+       }
    }
 }
 
 
 void delword()
 {
-   char *str;
+   BYTE *str;
    int line, i;
 
    if (ptr != end)
    {
       str = ptr;
 
-      if (!*str)
+      if (iseol(*ptr))
       {
-	 str ++;
+	 str += 2;
 	 memmove(ptr, str, (end - str) + 1);
 	 end -= str - ptr;
 	 showline(ptr, end);
@@ -663,10 +656,10 @@ void delword()
       }
       else
       {
-	 while (*str && !isspace(*str))
+	 while (!iseol(*ptr) && !isspace(*str))
 	    str ++;
 
-	 while (isspace(*str))
+	 while (isspace(*str) && !iseol(*str))
 	    str ++;
 
 	 memmove(ptr, str, (end - str) + 1);
@@ -681,7 +674,7 @@ void delword()
 
 void nextword()
 {
-   if (!*ptr)
+   if (iseol(*ptr))
    {
       if (ptr != end && x < 80)
       {
@@ -691,7 +684,7 @@ void nextword()
    }
    else
    {
-      while (*ptr && x < 80)
+      while (!iseol(*ptr) && x < 80)
       {
 	 x ++;
 	 if (isspace(*ptr ++))
@@ -709,8 +702,6 @@ void nextword()
 
 void lastword()
 {
-   int len;
-
    while (ptr > start)
    {
       if (!*(ptr - 1) || !isspace(*(ptr - 1)))
@@ -722,9 +713,7 @@ void lastword()
    if (!*(ptr - 1))
    {
       lineup();
-      len = strlen(ptr);
-      x = (len < 80) ? len + 1: 80;
-      ptr += (x - 1);
+      gotocol(80);
    }
 
    while (ptr > start)
@@ -739,7 +728,7 @@ void lastword()
 
 void gotoeol()
 {
-   while (*ptr && x < 80)
+   while (!iseol(*ptr) && x < 80)
    {
       ptr ++;
       x ++;
@@ -813,7 +802,7 @@ int textread(char *fname, int create)
    if (!(fnsplit(fname, drive, dir, file, ext) & EXTENSION))
       strcat(fname, ".prg");
 
-   if ((in = open(fname, O_RDONLY | O_TEXT)) == -1)
+   if ((in = open(fname, O_RDONLY | O_BINARY)) == -1)
    {
       if (!create)
 	 msg("File does not exist (press SPACE) ");
@@ -833,6 +822,9 @@ int textread(char *fname, int create)
    }
 
    close(in);
+
+   if (*(ptr + bytes - 1) == 26)
+      bytes --;
 
    return bytes;
 }
