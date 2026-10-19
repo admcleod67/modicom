@@ -19,10 +19,26 @@ rather than a small patch:
 - `VIDEO.ASM` display logic is updated for those line endings and
   related markers.
 - Dual builds are selected with the `VERSION_M` preprocessor symbol
-  (defined in `EDITOR.H` in this tree): without it the banner is
-  `v2.0`; with it, `v2.0m`. Period binaries `MODICOM.20` and
-  `MODICOM.20M` correspond to those variants.
+  (see below). Period binaries `MODICOM.20` and `MODICOM.20M`
+  correspond to the `v2.0` and `v2.0m` variants.
 - Copyright text in `MODICOM.C` reads `1994-95`.
+
+### The `VERSION_M` (2.0 / 2.0m) switch
+
+`VERSION_M` is a compile-time switch. In this recovered tree it is
+turned on with a `#define VERSION_M` in `EDITOR.H`. The Borland
+project file (`MODICOM.PRJ`) does not store a matching
+`-DVERSION_M` (or IDE “Defines”) entry; rebuilding in the IDE simply
+honours whatever is in that header.
+
+| | Without `VERSION_M` (`v2.0`) | With `VERSION_M` (`v2.0m`) |
+|--|------------------------------|----------------------------|
+| Banner | ModiCom … Editor v2.0 | ModiCom … Editor v2.0m |
+| On save | Appends a DOS Ctrl+Z (`0x1A`) EOF byte | Writes buffer only — no Ctrl+Z |
+
+The save-path logic is in `EDITOR.C`. This tree ships with
+`VERSION_M` defined, so a straight rebuild produces the **2.0m**
+variant.
 
 ## Original toolset
 
@@ -77,8 +93,11 @@ adjustment for 2.0.
 The compiler binary directory also needed to be on `PATH` so the IDE
 could find TASM when assembling `VIDEO.ASM`.
 
-To build the non-`m` variant, remove or undefine `VERSION_M` in
-`EDITOR.H` before compiling.
+To build the non-`m` (`v2.0`) variant, remove or comment out
+`#define VERSION_M` in `EDITOR.H`, then rebuild. Restore the define
+and rebuild for `v2.0m`. (Borland C++ 3.1 could also pass
+`-DVERSION_M` via Options → Compiler → Defines; that approach is not
+used in the surviving project file.)
 
 ## Scope of this document
 
