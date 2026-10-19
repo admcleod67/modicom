@@ -52,10 +52,9 @@ variant.
 
 ### Compiler version
 
-This version continues the Borland C++ toolset used for 1.3/1.4.
-Earlier releases were successfully rebuilt with **Borland C++ 3.1**
-on DOS and Turbo Assembler for `VIDEO.ASM`; use the same environment
-for 2.0 unless a later note records otherwise.
+This version has been successfully rebuilt from the sources on this
+branch using **Borland C++ 3.1** on DOS, with Turbo Assembler for
+`VIDEO.ASM` — the same toolset verified for 1.3 and 1.4.
 
 The shipped artifacts embed `Borland C++ - Copyright 1991 Borland
 Intl.`, and `MODICOM.PRJ` is a Turbo C–format project file (also used
@@ -92,6 +91,11 @@ adjustment for 2.0.
 
 The compiler binary directory also needed to be on `PATH` so the IDE
 could find TASM when assembling `VIDEO.ASM`.
+
+If TASM reports `Error writing object file`, delete any existing
+`VIDEO.OBJ` in the project directory and assemble again. A stale or
+unwritable object file can cause that failure even when TASM is on
+`PATH`.
 
 To build the non-`m` (`v2.0`) variant, remove or comment out
 `#define VERSION_M` in `EDITOR.H`, then rebuild. Restore the define
