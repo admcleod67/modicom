@@ -1,16 +1,28 @@
-# Building Modicom (historical DOS tree)
+# Building Modicom 2.0
 
-The sources currently on `main` match the Modicom **1.4** historical
-tree. They are intended to be built with the original DOS toolchain,
+This branch preserves Modicom version 2.0 as recovered from period
+archives. It is intended to be built with the original DOS toolchain,
 not a modern compiler.
 
-Frozen, version-specific copies of these notes also live on the
-historic branches (`modicom-v1.3`, `modicom-v1.4`). See
-`docs/history.md` for the version timeline.
+## Changes in 2.0
 
-Compared with 1.3, version 1.4 is a small behavioural fix: extended
-(non-character) keys are no longer inserted into the edit buffer as
-junk characters. The version banner in `MODICOM.C` reads v1.4.
+Compared with 1.4, this is a structural and xBase-focused release
+rather than a small patch:
+
+- Product identity becomes **ModiCom xBase Programmer's Editor**
+  (version banner `v2.0` / `v2.0m`).
+- Editor constants and the `textedit` prototype move into a new
+  header, `EDITOR.H`.
+- String helpers gain `iseol` and `linelen` in `STRINGS.H` /
+  `STRINGS.C`. End-of-line recognition includes Clipper/xBase soft
+  carriage return (`0x8d`) as well as CR and NUL.
+- `VIDEO.ASM` display logic is updated for those line endings and
+  related markers.
+- Dual builds are selected with the `VERSION_M` preprocessor symbol
+  (defined in `EDITOR.H` in this tree): without it the banner is
+  `v2.0`; with it, `v2.0m`. Period binaries `MODICOM.20` and
+  `MODICOM.20M` correspond to those variants.
+- Copyright text in `MODICOM.C` reads `1994-95`.
 
 ## Original toolset
 
@@ -24,10 +36,10 @@ junk characters. The version banner in `MODICOM.C` reads v1.4.
 
 ### Compiler version
 
-This version uses the same toolchain as 1.3: **Borland C++ 3.1** on
-DOS, with Turbo Assembler for `VIDEO.ASM`. Version 1.3 was
-successfully rebuilt with that toolset; the 1.4 sources are the same
-project layout with the input-handling change above.
+This version continues the Borland C++ toolset used for 1.3/1.4.
+Earlier releases were successfully rebuilt with **Borland C++ 3.1**
+on DOS and Turbo Assembler for `VIDEO.ASM`; use the same environment
+for 2.0 unless a later note records otherwise.
 
 The shipped artifacts embed `Borland C++ - Copyright 1991 Borland
 Intl.`, and `MODICOM.PRJ` is a Turbo C–format project file (also used
@@ -40,11 +52,11 @@ from the surviving sources.
 
 ### Application copyright
 
-Source files in this version carry:
-
 ```text
-Copyright (c) 1994, Orkney Software Ltd
+Copyright (c) 1994-95 by Orkney Software Ltd
 ```
+
+(`VIDEO.ASM` still carries a 1994 Orkney copyright line.)
 
 ## How to build
 
@@ -52,21 +64,25 @@ Open `MODICOM.PRJ` in the Borland C++ 3.1 IDE and build the project
 from there. The project references:
 
 - `MODICOM.C`
-- `EDITOR.C`
-- `STRINGS.C`
-- `KEYBOARD.C`
+- `EDITOR.C` / `EDITOR.H`
+- `STRINGS.C` / `STRINGS.H`
+- `KEYBOARD.C` / `KEYBOARD.H`
 - `VIDEO.ASM` (assembled with TASM)
 
 Include and library paths in the recovered project point at a local
 `C:\C\INCLUDE` and `C:\C\LIB` layout. These needed updating to the
-Borland C++ 3.1 installation paths for a successful rebuild of 1.3;
-use the same adjustment for 1.4.
+Borland C++ 3.1 installation paths for earlier rebuilds; use the same
+adjustment for 2.0.
 
 The compiler binary directory also needed to be on `PATH` so the IDE
 could find TASM when assembling `VIDEO.ASM`.
 
+To build the non-`m` variant, remove or undefine `VERSION_M` in
+`EDITOR.H` before compiling.
+
 ## Scope of this document
 
-This file describes the **historical** DOS toolset for the sources
-present on `main` (currently 1.4). Modern platform build instructions
-will be added separately as ports land.
+This file describes the **historical** toolset for branch
+`modicom-v2.0` only. Modern build instructions belong on `main`.
+Broader version history across releases is collected in
+`docs/history.md` on the active development line.
