@@ -1,8 +1,12 @@
-# Building Modicom 2.0
+# Building Modicom (historical DOS tree)
 
-This branch preserves Modicom version 2.0 as recovered from period
-archives. It is intended to be built with the original DOS toolchain,
-not a modern compiler.
+The sources currently on `main` match the Modicom **2.0** historical
+tree — the last recovered historic version. They are intended to be
+built with the original DOS toolchain, not a modern compiler.
+
+Frozen, version-specific copies of these notes also live on the
+historic branches (`modicom-v1.3`, `modicom-v1.4`, `modicom-v2.0`).
+See `docs/history.md` for the version timeline and release artifacts.
 
 ## Changes in 2.0
 
@@ -52,9 +56,9 @@ variant.
 
 ### Compiler version
 
-This version has been successfully rebuilt from the sources on this
-branch using **Borland C++ 3.1** on DOS, with Turbo Assembler for
-`VIDEO.ASM` — the same toolset verified for 1.3 and 1.4.
+This version has been successfully rebuilt from these sources using
+**Borland C++ 3.1** on DOS, with Turbo Assembler for `VIDEO.ASM` —
+the same toolset verified for 1.3 and 1.4.
 
 The shipped artifacts embed `Borland C++ - Copyright 1991 Borland
 Intl.`, and `MODICOM.PRJ` is a Turbo C–format project file (also used
@@ -105,7 +109,7 @@ used in the surviving project file.)
 
 ## Scope of this document
 
-This file describes the **historical** toolset for branch
-`modicom-v2.0` only. Modern build instructions belong on `main`.
-Broader version history across releases is collected in
-`docs/history.md` on the active development line.
+This file describes the **historical** DOS toolset for the sources
+present on `main` (currently 2.0). Modern platform build instructions
+will be added separately as ports land. Broader version history is in
+`docs/history.md`.

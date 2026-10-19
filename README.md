@@ -17,28 +17,29 @@ This repository serves two purposes:
 1. Preservation of the original historical source code.
 2. Ongoing development and porting to modern platforms.
 
-The original source code has been preserved in dedicated branches,
-representing significant versions recovered from the project's history.
+The recovered historical sources have been imported onto dedicated
+branches and merged into `main`. Version **2.0** is the last of that
+historic series; further work on `main` is modernisation and porting
+(unless additional archives are found later).
 
 ## Repository Structure
 
 ### Historical Branches
 
-The following branches contain preserved historical versions of the
-editor:
+The following branches contain frozen snapshots of recovered
+versions:
 
-- `modicom-v1.3` — Modicom 1.3
-- `modicom-v1.4` — Modicom 1.4
-- `modicom-v2.0` — Modicom 2.0 (this branch)
+- `modicom-v1.3` — Modicom 1.3 (tag `v1.3.0`)
+- `modicom-v1.4` — Modicom 1.4 (tag `v1.4.0`)
+- `modicom-v2.0` — Modicom 2.0 (tag `v2.0.0`)
 
 These branches are intended to remain unchanged and provide reference
-points for the evolution of the project. Further versions will be
-added as they are recovered.
+points for the evolution of the project.
 
 ### Main Branch
 
-The `main` branch represents the active development line. It begins
-with the historical codebase and may include:
+The `main` branch is the active development line. It currently
+matches the Modicom 2.0 historical tree and may go on to include:
 
 - Portability improvements
 - Linux support
@@ -51,17 +52,19 @@ with the historical codebase and may include:
 The original versions were developed for DOS and later Windows
 environments.
 
-This historic branch (`modicom-v2.0`) documents the period toolset and
-structural changes for version 2.0 in `BUILD.md`. Broader version
-history across releases is collected in `docs/history.md` on the
-active development line.
+Period toolsets and rebuild notes are in `BUILD.md` (reflecting the
+sources on `main`, currently 2.0). Each historic branch also keeps its
+own copy of those notes. Version timeline and release artifacts are
+documented in `docs/history.md`.
 
 ## Building
 
-To rebuild this version with the original toolchain, see `BUILD.md`.
+To rebuild the historical DOS sources with the original toolchain,
+see `BUILD.md`.
 
-Original DOS executables for tagged releases are published as GitHub
-Release assets, not tracked in the repository tree.
+Original DOS executables for tagged releases (`v1.3.0`, `v1.4.0`,
+`v2.0.0`) are published as GitHub Release assets, not tracked in the
+repository tree.
 
 Build instructions for currently supported modern platforms will be
 documented here as ports land on `main`.
