@@ -1,8 +1,12 @@
-# Building Modicom 1.3
+# Building Modicom 1.4
 
-This branch preserves Modicom version 1.3 as recovered from period
+This branch preserves Modicom version 1.4 as recovered from period
 archives. It is intended to be built with the original DOS toolchain,
 not a modern compiler.
+
+Compared with 1.3, this release is a small behavioural fix: extended
+(non-character) keys are no longer inserted into the edit buffer as
+junk characters. The version banner in `MODICOM.C` reads v1.4.
 
 ## Original toolset
 
@@ -16,14 +20,14 @@ not a modern compiler.
 
 ### Compiler version
 
-This version has been successfully rebuilt from the sources on this
-branch using **Borland C++ 3.1** on DOS, with Turbo Assembler for
-`VIDEO.ASM`.
+This version uses the same toolchain as 1.3: **Borland C++ 3.1** on
+DOS, with Turbo Assembler for `VIDEO.ASM`. Version 1.3 was
+successfully rebuilt with that toolset; the 1.4 sources are the same
+project layout with the input-handling change above.
 
-That matches the surviving artifacts: the shipped executable embeds
-`Borland C++ - Copyright 1991 Borland Intl.`, and `MODICOM.PRJ` is a
-Turbo C–format project file (also used by Borland C++). A period
-machine archive likewise pointed at Borland C++ 3.1 (c. 1992).
+The shipped artifacts embed `Borland C++ - Copyright 1991 Borland
+Intl.`, and `MODICOM.PRJ` is a Turbo C–format project file (also used
+by Borland C++).
 
 An earlier origin in Turbo C is still possible. Borland C++ continued
 to read Turbo C project files, so a later migration would be
@@ -51,7 +55,8 @@ from there. The project references:
 
 Include and library paths in the recovered project point at a local
 `C:\C\INCLUDE` and `C:\C\LIB` layout. These needed updating to the
-Borland C++ 3.1 installation paths for a successful rebuild.
+Borland C++ 3.1 installation paths for a successful rebuild of 1.3;
+use the same adjustment for 1.4.
 
 The compiler binary directory also needed to be on `PATH` so the IDE
 could find TASM when assembling `VIDEO.ASM`.
@@ -59,4 +64,4 @@ could find TASM when assembling `VIDEO.ASM`.
 ## Scope of this document
 
 This file describes the **historical** toolset for branch
-`modicom-v1.3` only. Modern build instructions belong on `main`.
+`modicom-v1.4` only. Modern build instructions belong on `main`.
