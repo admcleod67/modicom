@@ -51,7 +51,7 @@ with the historical codebase and may include:
 The original versions were developed for DOS and later Windows
 environments.
 
-This historic branch (`modicom-v1.3`) documents the period toolset in
+This historic branch (`modicom-v1.4`) documents the period toolset in
 `BUILD.md`. Broader version history across releases will be collected
 in `docs/history.md` on the active development line.
 

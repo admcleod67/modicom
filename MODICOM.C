@@ -7,7 +7,7 @@
 
 void showuse(int parameters)
 {
-   printf("\nModiCom Programmer's Editor v1.3\n");
+   printf("\nModiCom Programmer's Editor v1.4\n");
    printf("Copyright (c) 1994, Orkney Software Ltd\n\n");
 
    if (parameters > 2)

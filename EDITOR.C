@@ -1187,7 +1187,8 @@ int textedit(char *name)
 	    break;
 
 	 default:
-	    inschar(key);
+	    if (key & 0xff)
+	       inschar(key);
       }
    }
    while (!stop);
