@@ -29,6 +29,7 @@ editor:
 
 - `modicom-v1.3` — Modicom 1.3
 - `modicom-v1.4` — Modicom 1.4
+- `modicom-v2.0` — Modicom 2.0 (this branch)
 
 These branches are intended to remain unchanged and provide reference
 points for the evolution of the project. Further versions will be
@@ -50,19 +51,17 @@ with the historical codebase and may include:
 The original versions were developed for DOS and later Windows
 environments.
 
-Period toolsets and rebuild notes are documented in `BUILD.md` on
-each historic branch (and currently reflected on `main` for the
-sources present there). Broader version history is in
-`docs/history.md`.
+This historic branch (`modicom-v2.0`) documents the period toolset and
+structural changes for version 2.0 in `BUILD.md`. Broader version
+history across releases is collected in `docs/history.md` on the
+active development line.
 
 ## Building
 
-To rebuild the historical DOS sources with the original toolchain,
-see `BUILD.md`.
+To rebuild this version with the original toolchain, see `BUILD.md`.
 
 Original DOS executables for tagged releases are published as GitHub
-Release assets (for example `v1.3.0` and `v1.4.0`), not tracked in
-the repository tree.
+Release assets, not tracked in the repository tree.
 
 Build instructions for currently supported modern platforms will be
 documented here as ports land on `main`.
