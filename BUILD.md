@@ -1,10 +1,14 @@
-# Building Modicom 1.4
+# Building Modicom (historical DOS tree)
 
-This branch preserves Modicom version 1.4 as recovered from period
-archives. It is intended to be built with the original DOS toolchain,
+The sources currently on `main` match the Modicom **1.4** historical
+tree. They are intended to be built with the original DOS toolchain,
 not a modern compiler.
 
-Compared with 1.3, this release is a small behavioural fix: extended
+Frozen, version-specific copies of these notes also live on the
+historic branches (`modicom-v1.3`, `modicom-v1.4`). See
+`docs/history.md` for the version timeline.
+
+Compared with 1.3, version 1.4 is a small behavioural fix: extended
 (non-character) keys are no longer inserted into the edit buffer as
 junk characters. The version banner in `MODICOM.C` reads v1.4.
 
@@ -32,7 +36,7 @@ by Borland C++).
 An earlier origin in Turbo C is still possible. Borland C++ continued
 to read Turbo C project files, so a later migration would be
 consistent with what remains. That earlier history is not verified
-from the sources on this branch.
+from the surviving sources.
 
 ### Application copyright
 
@@ -63,5 +67,6 @@ could find TASM when assembling `VIDEO.ASM`.
 
 ## Scope of this document
 
-This file describes the **historical** toolset for branch
-`modicom-v1.4` only. Modern build instructions belong on `main`.
+This file describes the **historical** DOS toolset for the sources
+present on `main` (currently 1.4). Modern platform build instructions
+will be added separately as ports land.

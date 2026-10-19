@@ -24,16 +24,15 @@ representing significant versions recovered from the project's history.
 
 ### Historical Branches
 
-The following branches will contain preserved historical versions of 
-the editor:
+The following branches contain preserved historical versions of the
+editor:
 
-- `modicom-v1`
-- `modicom-v2`
-- `modicom-v3`
-- `modicom-v4`
+- `modicom-v1.3` — Modicom 1.3
+- `modicom-v1.4` — Modicom 1.4
 
 These branches are intended to remain unchanged and provide reference
-points for the evolution of the project.
+points for the evolution of the project. Further versions will be
+added as they are recovered.
 
 ### Main Branch
 
@@ -51,16 +50,22 @@ with the historical codebase and may include:
 The original versions were developed for DOS and later Windows
 environments.
 
-This historic branch (`modicom-v1.4`) documents the period toolset in
-`BUILD.md`. Broader version history across releases will be collected
-in `docs/history.md` on the active development line.
+Period toolsets and rebuild notes are documented in `BUILD.md` on
+each historic branch (and currently reflected on `main` for the
+sources present there). Broader version history is in
+`docs/history.md`.
 
 ## Building
 
-To rebuild this version with the original toolchain, see `BUILD.md`.
+To rebuild the historical DOS sources with the original toolchain,
+see `BUILD.md`.
 
-Build instructions for currently supported platforms can be found on
-the `main` branch.
+Original DOS executables for tagged releases are published as GitHub
+Release assets (for example `v1.3.0` and `v1.4.0`), not tracked in
+the repository tree.
+
+Build instructions for currently supported modern platforms will be
+documented here as ports land on `main`.
 
 ## Historical Note
 
@@ -68,4 +73,3 @@ Modicom was created at a time when many Clipper developers were
 comfortable using the dBASE III+ editor for source code development.
 Rather than launching dBASE solely to edit program files, Modicom
 provided a familiar editing environment as a dedicated standalone tool.
-
