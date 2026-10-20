@@ -34,12 +34,22 @@ versions:
 - `modicom-v2.0` — Modicom 2.0 (tag `v2.0.0`)
 
 These branches are intended to remain unchanged and provide reference
-points for the evolution of the project.
+points for the evolution of the project. They retain the recovered,
+mostly flat source layout.
 
 ### Main Branch
 
-The `main` branch is the active development line. It currently
-matches the Modicom 2.0 historical tree and may go on to include:
+The `main` branch is the active development line. Its code is based on
+the Modicom 2.0 historical tree, but the working layout has since been
+restructured:
+
+- `src/` — C, header, and assembly sources
+- `build/` — generated object files and executables (not source)
+- `examples/` — period files used to exercise the editor
+- `docs/` — project history and documentation
+- `MODICOM.PRJ` / `MODICOM.DSK` — Borland project files at the root
+
+Future work on `main` may include:
 
 - Portability improvements
 - Linux support
@@ -52,15 +62,16 @@ matches the Modicom 2.0 historical tree and may go on to include:
 The original versions were developed for DOS and later Windows
 environments.
 
-Period toolsets and rebuild notes are in `BUILD.md` (reflecting the
-sources on `main`, currently 2.0). Each historic branch also keeps its
-own copy of those notes. Version timeline and release artifacts are
-documented in `docs/history.md`.
+Period toolsets and rebuild notes are in `BUILD.md`. On `main`, those
+notes describe the restructured 2.0-based source tree; each historic
+branch keeps notes matching its preserved layout. Version timeline
+and release artifacts are documented in `docs/history.md`.
 
 ## Building
 
-To rebuild the historical DOS sources with the original toolchain,
-see `BUILD.md`.
+To rebuild the DOS version from the current `src/` layout with the
+original Borland toolchain, see `BUILD.md`. Build output is placed
+under `build/`.
 
 Original DOS executables for tagged releases (`v1.3.0`, `v1.4.0`,
 `v2.0.0`) are published as GitHub Release assets, not tracked in the

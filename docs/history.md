@@ -48,9 +48,25 @@ Original DOS builds are attached to the GitHub release for `v2.0.0`:
 `MODICOM.20` is **v2.0**; `MODICOM.20M` and `MODICOM.EXE` are the
 same **v2.0m** image.
 
+## Development note: `SHOWPAGE.C`
+
+`SHOWPAGE.C` appears to be an early C implementation of page display
+that was superseded by the `showpage` routine in `VIDEO.ASM` before
+the earliest recovered snapshot (1.3). The C version drew through
+Borland console functions; the assembler version writes directly to
+video RAM and keeps the same `<` / `+` line markers. The author
+recalls screen handling being slow and resorting to assembler, which
+supports that reading. The C file is preserved on the historic
+branches and under `src/` on `main`, but it has not been part of the
+Borland project in any recovered version.
+
 ## Repository line
 
-Historic branches remain frozen references. With 2.0 imported,
-`main` carries that tree as the baseline for modern ports and
-build-system work. Any later archive discovery would be handled as a
-new historic branch rather than extending this closed series.
+Historic branches remain frozen references with the recovered flat
+layout. After 2.0 was imported, `main` was restructured so sources
+live under `src/` and DOS build output under `build/`; the Borland
+project at the repository root was updated for those paths and
+rebuilds successfully with Borland C++ 3.1. Content on `main` remains
+the 2.0 baseline for modern ports and build-system work. Any later
+archive discovery would be handled as a new historic branch rather
+than extending this closed series.

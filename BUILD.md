@@ -1,12 +1,14 @@
-# Building Modicom (historical DOS tree)
+# Building Modicom on `main` (DOS / Borland)
 
-The sources currently on `main` match the Modicom **2.0** historical
-tree — the last recovered historic version. They are intended to be
-built with the original DOS toolchain, not a modern compiler.
+The code on `main` is based on the Modicom **2.0** historical sources,
+now kept under `src/`. It is still intended to be built with the
+original DOS toolchain, not a modern compiler.
 
-Frozen, version-specific copies of these notes also live on the
-historic branches (`modicom-v1.3`, `modicom-v1.4`, `modicom-v2.0`).
-See `docs/history.md` for the version timeline and release artifacts.
+Frozen, version-specific copies of these notes live on the historic
+branches (`modicom-v1.3`, `modicom-v1.4`, `modicom-v2.0`), which keep
+the recovered flat layout. This document describes the restructured
+layout on `main` only. See `docs/history.md` for the version timeline
+and release artifacts.
 
 ## Changes in 2.0
 
@@ -40,7 +42,7 @@ honours whatever is in that header.
 | Banner | ModiCom … Editor v2.0 | ModiCom … Editor v2.0m |
 | On save | Appends a DOS Ctrl+Z (`0x1A`) EOF byte | Writes buffer only — no Ctrl+Z |
 
-The save-path logic is in `EDITOR.C`. This tree ships with
+The save-path logic is in `src/EDITOR.C`. This tree ships with
 `VERSION_M` defined, so a straight rebuild produces the **2.0m**
 variant.
 
@@ -75,41 +77,50 @@ from the surviving sources.
 Copyright (c) 1994-95 by Orkney Software Ltd
 ```
 
-(`VIDEO.ASM` still carries a 1994 Orkney copyright line.)
+(`src/VIDEO.ASM` still carries a 1994 Orkney copyright line.)
 
 ## How to build
 
-Open `MODICOM.PRJ` in the Borland C++ 3.1 IDE and build the project
-from there. The project references:
+Open `MODICOM.PRJ` (in the repository root) in the Borland C++ 3.1
+IDE and build the project from there. The project references:
 
-- `MODICOM.C`
-- `EDITOR.C` / `EDITOR.H`
-- `STRINGS.C` / `STRINGS.H`
-- `KEYBOARD.C` / `KEYBOARD.H`
-- `VIDEO.ASM` (assembled with TASM)
+- `src/MODICOM.C`
+- `src/EDITOR.C` / `src/EDITOR.H`
+- `src/STRINGS.C` / `src/STRINGS.H`
+- `src/KEYBOARD.C` / `src/KEYBOARD.H`
+- `src/VIDEO.ASM` (assembled with TASM)
 
-Include and library paths in the recovered project point at a local
-`C:\C\INCLUDE` and `C:\C\LIB` layout. These needed updating to the
-Borland C++ 3.1 installation paths for earlier rebuilds; use the same
-adjustment for 2.0.
+Object files and the executable are written to `build\` (for example
+`build\MODICOM.EXE`).
+
+The project on `main` is configured with include paths
+`C:\BORLANDC\INCLUDE;SRC` and library path `C:\BORLANDC\LIB`. Adjust
+these in the IDE if your Borland C++ 3.1 installation lives elsewhere.
 
 The compiler binary directory also needed to be on `PATH` so the IDE
-could find TASM when assembling `VIDEO.ASM`.
+could find TASM when assembling `src\VIDEO.ASM`.
 
 If TASM reports `Error writing object file`, delete any existing
-`VIDEO.OBJ` in the project directory and assemble again. A stale or
-unwritable object file can cause that failure even when TASM is on
-`PATH`.
+`build\VIDEO.OBJ` and assemble again. A stale or unwritable object
+file can cause that failure even when TASM is on `PATH`.
 
 To build the non-`m` (`v2.0`) variant, remove or comment out
-`#define VERSION_M` in `EDITOR.H`, then rebuild. Restore the define
-and rebuild for `v2.0m`. (Borland C++ 3.1 could also pass
+`#define VERSION_M` in `src/EDITOR.H`, then rebuild. Restore the
+define and rebuild for `v2.0m`. (Borland C++ 3.1 could also pass
 `-DVERSION_M` via Options → Compiler → Defines; that approach is not
 used in the surviving project file.)
 
+### Note on `src/SHOWPAGE.C`
+
+`src/SHOWPAGE.C` is kept for historical interest but is **not** part
+of the Borland project and is not linked. The live `showpage` routine
+used by the editor is implemented in `src/VIDEO.ASM`. See
+`docs/history.md` for the likely background.
+
 ## Scope of this document
 
-This file describes the **historical** DOS toolset for the sources
-present on `main` (currently 2.0). Modern platform build instructions
-will be added separately as ports land. Broader version history is in
-`docs/history.md`.
+This file describes building the DOS version from the current `main`
+layout (`src/` → `build/`) with the period Borland toolset. Modern
+platform build instructions will be added separately as ports land.
+Historic flat-layout trees should be built using the `BUILD.md` on
+their own branches. Broader version history is in `docs/history.md`.
