@@ -88,10 +88,10 @@ binary directory on `PATH`, build with Borland Make:
 MAKE
 ```
 
-This uses the repository `MAKEFILE`, generates
-`build\MODICOM.CFG`, and writes objects and `build\MODICOM.EXE`
-under `build\`. Use `MAKE clean` to remove generated files, or
-`MAKE rebuild` for a clean full build.
+This uses the repository `MAKEFILE` and checked-in `MODICOM.CFG`,
+and writes objects and `build\MODICOM.EXE` under `build\`. Adjust
+the `BORLANDC` path in `MAKEFILE` if necessary. Use `MAKE clean` to
+remove generated files, or `MAKE rebuild` for a clean full build.
 
 Alternatively, open `MODICOM.PRJ` (in the repository root) in the
 Borland C++ 3.1 IDE and build the project from there. The project
