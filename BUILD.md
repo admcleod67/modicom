@@ -123,13 +123,6 @@ define and rebuild for `v2.0m`. (Borland C++ 3.1 could also pass
 `-DVERSION_M` via Options → Compiler → Defines; that approach is not
 used in the surviving project file.)
 
-### Note on `src/SHOWPAGE.C`
-
-`src/SHOWPAGE.C` is kept for historical interest but is **not** part
-of the Borland project and is not linked. The live `showpage` routine
-used by the editor is implemented in `src/VIDEO.ASM`. See
-`docs/history.md` for the likely background.
-
 ## Scope of this document
 
 This file describes building the DOS version from the current `main`

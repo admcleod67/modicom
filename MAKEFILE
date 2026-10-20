@@ -8,9 +8,6 @@
 # Sources are read from SRC and objects and MODICOM.EXE are written
 # to BUILD.  Compiler options are held in MODICOM.CFG.  Adjust
 # BORLANDC below if Borland C++ is not installed in C:\BORLANDC.
-#
-# SHOWPAGE.C is intentionally not built; the active showpage routine
-# is implemented in SRC\VIDEO.ASM.
 
 .AUTODEPEND
 
