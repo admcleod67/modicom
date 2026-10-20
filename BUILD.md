@@ -81,8 +81,21 @@ Copyright (c) 1994-95 by Orkney Software Ltd
 
 ## How to build
 
-Open `MODICOM.PRJ` (in the repository root) in the Borland C++ 3.1
-IDE and build the project from there. The project references:
+From a DOS prompt in the repository root, with the Borland C++ 3.1
+binary directory on `PATH`, build with Borland Make:
+
+```text
+MAKE
+```
+
+This uses the repository `MAKEFILE`, generates
+`build\MODICOM.CFG`, and writes objects and `build\MODICOM.EXE`
+under `build\`. Use `MAKE clean` to remove generated files, or
+`MAKE rebuild` for a clean full build.
+
+Alternatively, open `MODICOM.PRJ` (in the repository root) in the
+Borland C++ 3.1 IDE and build the project from there. The project
+references:
 
 - `src/MODICOM.C`
 - `src/EDITOR.C` / `src/EDITOR.H`

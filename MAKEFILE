@@ -1,0 +1,110 @@
+# Modicom - Borland C++ 3.1 makefile
+#
+# Build from the repository root inside DOS (for example, DOSBox):
+#
+#       MAKE
+#       MAKE clean
+#
+# Sources are read from SRC and all objects and MODICOM.EXE are
+# written to BUILD.  SHOWPAGE.C is intentionally not built; the
+# active showpage routine is implemented in SRC\VIDEO.ASM.
+
+.AUTODEPEND
+
+.PATH.obj = BUILD
+
+#       *Tool and path definitions*
+
+BORLANDC = C:\BORLANDC
+CC       = BCC +BUILD\MODICOM.CFG
+TASM     = TASM
+TLINK    = TLINK
+
+INCLUDEPATH = $(BORLANDC)\INCLUDE;SRC
+LIBPATH     = $(BORLANDC)\LIB
+
+AFLAGS = /MX /ZI /O
+LFLAGS = /v /x /c /P- /L$(LIBPATH)
+
+OBJS = BUILD\MODICOM.OBJ BUILD\EDITOR.OBJ BUILD\KEYBOARD.OBJ BUILD\STRINGS.OBJ BUILD\VIDEO.OBJ
+
+#       *Targets*
+
+all: BUILD\MODICOM.EXE
+
+BUILD\MODICOM.EXE: $(OBJS)
+	@if not exist BUILD\NUL md BUILD
+	$(TLINK) $(LFLAGS) @&&|
+C0S.OBJ+
+BUILD\MODICOM.OBJ+
+BUILD\EDITOR.OBJ+
+BUILD\KEYBOARD.OBJ+
+BUILD\STRINGS.OBJ+
+BUILD\VIDEO.OBJ
+BUILD\MODICOM
+		# no map file
+GRAPHICS.LIB+
+CS.LIB
+|
+
+#       *Individual file rules*
+
+BUILD\MODICOM.OBJ: BUILD\MODICOM.CFG SRC\MODICOM.C SRC\EDITOR.H MAKEFILE
+	@if not exist BUILD\NUL md BUILD
+	$(CC) -c SRC\MODICOM.C
+
+BUILD\EDITOR.OBJ: BUILD\MODICOM.CFG SRC\EDITOR.C SRC\EDITOR.H SRC\KEYBOARD.H SRC\STRINGS.H MAKEFILE
+	@if not exist BUILD\NUL md BUILD
+	$(CC) -c SRC\EDITOR.C
+
+BUILD\KEYBOARD.OBJ: BUILD\MODICOM.CFG SRC\KEYBOARD.C SRC\KEYBOARD.H MAKEFILE
+	@if not exist BUILD\NUL md BUILD
+	$(CC) -c SRC\KEYBOARD.C
+
+BUILD\STRINGS.OBJ: BUILD\MODICOM.CFG SRC\STRINGS.C SRC\STRINGS.H MAKEFILE
+	@if not exist BUILD\NUL md BUILD
+	$(CC) -c SRC\STRINGS.C
+
+BUILD\VIDEO.OBJ: SRC\VIDEO.ASM MAKEFILE
+	@if not exist BUILD\NUL md BUILD
+	$(TASM) $(AFLAGS) SRC\VIDEO.ASM,BUILD\VIDEO.OBJ
+
+#       *Compiler configuration*
+#
+# These options reproduce the configuration generated from
+# MODICOM.PRJ by Borland's PRJ2MAK utility.  They are kept in a
+# configuration file because expanding them directly into every
+# BCC command exceeds the DOS command-line limit used by MAKE.
+
+BUILD\MODICOM.CFG: MAKEFILE
+	@if not exist BUILD\NUL md BUILD
+	copy &&|
+-f-
+-ff-
+-G
+-O
+-Og
+-Oe
+-Om
+-Ov
+-Ol
+-Ob
+-Op
+-Oi
+-Z
+-k-
+-vi-
+-weas
+-wpre
+-nBUILD
+-I$(INCLUDEPATH)
+-L$(LIBPATH)
+-P-.C
+| BUILD\MODICOM.CFG
+
+clean:
+	-del BUILD\MODICOM.EXE
+	-del BUILD\*.OBJ
+	-del BUILD\MODICOM.CFG
+
+rebuild: clean all
