@@ -27,7 +27,7 @@ rather than a small patch:
 - Dual builds are selected with the `VERSION_M` preprocessor symbol
   (see below). Period binaries `MODICOM.20` and `MODICOM.20M`
   correspond to the `v2.0` and `v2.0m` variants.
-- Copyright text in `MODICOM.C` reads `1994-95`.
+- Copyright text in the recovered `MODICOM.C` reads `1994-95`.
 
 ### The `VERSION_M` (2.0 / 2.0m) switch
 
@@ -73,11 +73,24 @@ from the surviving sources.
 
 ### Application copyright
 
+Period ModiCom artifacts carry the original notice:
+
 ```text
 Copyright (c) 1994-95 by Orkney Software Ltd
 ```
 
-(`src/VIDEO.ASM` still carries a 1994 Orkney copyright line.)
+On `main`, the program banner in `src/MODICOM.C` and the header in
+`src/VIDEO.ASM` now read:
+
+```text
+Copyright (c) 1994-2026 Allan McLeod
+```
+
+Orkney Software Ltd no longer exists; its software rights were
+transferred to Allan McLeod, who holds the copyright and licenses
+the project under the MIT License (see `LICENSE`). Historic
+branches, tags, and period release artifacts retain their original
+notices.
 
 ## How to build
 

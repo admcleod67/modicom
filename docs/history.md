@@ -38,8 +38,8 @@ relative to 1.4:
 - `VIDEO.ASM` updated for xBase line-ending display
 - Dual builds via `VERSION_M`: **v2.0** appends Ctrl+Z on save;
   **v2.0m** does not
-- Product banner: ModiCom xBase Programmer's Editor; copyright
-  `1994-95`
+- Product banner: ModiCom xBase Programmer's Editor; period
+  copyright notice: Orkney Software Ltd, `1994-95`
 
 Rebuild verified with Borland C++ 3.1 and TASM. See `BUILD.md` on
 that branch (and on `main`) for toolset and `VERSION_M` details.
@@ -70,7 +70,11 @@ live under `src/` and DOS build output under `build/`; the Borland
 project at the repository root was updated for those paths and
 rebuilds successfully with Borland C++ 3.1. The superseded
 `SHOWPAGE.C` was subsequently removed from `main` while remaining
-preserved on the historic branches. Content on `main` remains
+preserved on the historic branches. Before the repository was made
+public, the main-line copyright notice was updated from Orkney
+Software Ltd to Allan McLeod, to whom the company's software rights
+had been transferred; historic branches, tags, and period release
+artifacts retain their original notices. Content on `main` remains
 the 2.0 baseline for modern ports and build-system work. Any later
 archive discovery would be handled as a new historic branch rather
 than extending this closed series.

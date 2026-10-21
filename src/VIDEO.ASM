@@ -1,6 +1,6 @@
 ;---------------------------------------------------------------
 ;          Video support routines for ModiCom editor
-;           Copyright (c) 1994, Orkney Software Ltd
+;           Copyright (c) 1994-2026, Allan McLeod
 ;---------------------------------------------------------------
 
 

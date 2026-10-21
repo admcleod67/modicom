@@ -13,7 +13,7 @@ void showuse(int parameters)
       printf("\nModiCom xBase Programmer's Editor v2.0\n");
    #endif
 
-   printf("Copyright (c) 1994-95 by Orkney Software Ltd\n\n");
+   printf("Copyright (c) 1994-2026 Allan McLeod\n\n");
 
    if (parameters > 2)
       printf(" Too many parameters!\n  ");

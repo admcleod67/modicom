@@ -86,3 +86,16 @@ Modicom was created at a time when many Clipper developers were
 comfortable using the dBASE III+ editor for source code development.
 Rather than launching dBASE solely to edit program files, Modicom
 provided a familiar editing environment as a dedicated standalone tool.
+
+## Copyright and Provenance
+
+ModiCom was written by Allan McLeod and originally carried Orkney
+Software Ltd copyright notices. Orkney Software Ltd has since
+ceased to exist, and its software rights were transferred to Allan
+McLeod, who holds the copyright and licenses this project under
+the MIT License (see `LICENSE`).
+
+On `main`, the program banner and source-header notices now name
+Allan McLeod. Historic branches, tags, period examples, and the
+original DOS release artifacts retain their original Orkney
+Software Ltd notices.
