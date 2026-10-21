@@ -1,4 +1,4 @@
-# Modicom - Borland C++ 3.1 makefile
+# ModiCom - Borland C++ 3.1 makefile
 #
 # Build from the repository root inside DOS (for example, DOSBox):
 #

@@ -1,6 +1,6 @@
-# Modicom Tests
+# ModiCom Tests
 
-This directory contains the initial automated tests for Modicom.
+This directory contains the initial automated tests for ModiCom.
 They are deliberately small and are intended to provide a regression
 baseline for work on `main`; they are not yet a complete test suite
 for the editor.

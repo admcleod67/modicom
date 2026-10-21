@@ -1,6 +1,6 @@
-# Modicom
+# ModiCom
 
-Modicom is a standalone text editor inspired by the `MODIFY COMMAND`
+ModiCom is a standalone text editor inspired by the `MODIFY COMMAND`
 editor found in dBASE III+.
 
 Originally written in C, the editor was commissioned by a Clipper
@@ -29,9 +29,9 @@ historic series; further work on `main` is modernisation and porting
 The following branches contain frozen snapshots of recovered
 versions:
 
-- `modicom-v1.3` — Modicom 1.3 (tag `v1.3.0`)
-- `modicom-v1.4` — Modicom 1.4 (tag `v1.4.0`)
-- `modicom-v2.0` — Modicom 2.0 (tag `v2.0.0`)
+- `modicom-v1.3` — ModiCom 1.3 (tag `v1.3.0`)
+- `modicom-v1.4` — ModiCom 1.4 (tag `v1.4.0`)
+- `modicom-v2.0` — ModiCom 2.0 (tag `v2.0.0`)
 
 These branches are intended to remain unchanged and provide reference
 points for the evolution of the project. They retain the recovered,
@@ -40,7 +40,7 @@ mostly flat source layout.
 ### Main Branch
 
 The `main` branch is the active development line. Its code is based on
-the Modicom 2.0 historical tree, but the working layout has since been
+the ModiCom 2.0 historical tree, but the working layout has since been
 restructured:
 
 - `src/` — C, header, and assembly sources
@@ -89,9 +89,9 @@ documented here as ports land on `main`.
 
 ## Historical Note
 
-Modicom was created at a time when many Clipper developers were
+ModiCom was created at a time when many Clipper developers were
 comfortable using the dBASE III+ editor for source code development.
-Rather than launching dBASE solely to edit program files, Modicom
+Rather than launching dBASE solely to edit program files, ModiCom
 provided a familiar editing environment as a dedicated standalone tool.
 
 ## Copyright and Provenance

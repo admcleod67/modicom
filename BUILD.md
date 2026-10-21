@@ -1,6 +1,6 @@
-# Building Modicom on `main` (DOS / Borland)
+# Building ModiCom on `main` (DOS / Borland)
 
-The code on `main` is based on the Modicom **2.0** historical sources,
+The code on `main` is based on the ModiCom **2.0** historical sources,
 now kept under `src/`. It is still intended to be built with the
 original DOS toolchain, not a modern compiler.
 

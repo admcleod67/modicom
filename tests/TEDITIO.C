@@ -1,4 +1,4 @@
-/* Editor file IO tests for Modicom.
+/* Editor file IO tests for ModiCom.
  *
  * Links the production EDITOR.OBJ with stubbed display routines and
  * a guard-banded edit buffer. With no command-line argument, runs

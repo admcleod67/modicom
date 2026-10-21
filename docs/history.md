@@ -1,9 +1,9 @@
-# Modicom version history
+# ModiCom version history
 
 This document records recovered historical versions and how they are
 preserved in the repository. It is maintained on `main`.
 
-The planned historic import series ends at **Modicom 2.0**. The
+The planned historic import series ends at **ModiCom 2.0**. The
 branches and tags below are the complete set recovered so far.
 
 ## Preserved versions
