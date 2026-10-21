@@ -7,13 +7,13 @@ for the editor.
 
 ## Scope
 
-The automated tests currently cover the string routines in
-`src/STRINGS.C`:
+The automated tests currently cover:
 
-- `replace`
-- `rtrim`
-- `linelen`, including CR and xBase soft carriage return (`0x8d`)
-  line endings
+- the string routines in `src/STRINGS.C` (`TSTRINGS.EXE`):
+  `replace`, `rtrim`, and `linelen`, including CR and xBase soft
+  carriage return (`0x8d`) line endings;
+- editor file loading and saving in `src/EDITOR.C` (`TEDITIO.EXE`),
+  described below.
 
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
@@ -30,6 +30,7 @@ directory on `PATH`, run:
 ```text
 MAKE -f TESTS\TESTS.MAK rebuild
 BUILD\TESTS\TSTRINGS
+BUILD\TESTS\TEDITIO
 ```
 
 If Borland C++ is not installed in `C:\BORLANDC`, adjust `BORLANDC`
@@ -52,6 +53,59 @@ MAKE -f TESTS\TESTS.MAK clean
 Test objects and executables are written under `build/tests/`,
 which is covered by the repository's existing `/build/` ignore
 rule.
+
+## Editor IO Tests (`TEDITIO.EXE`)
+
+`TEDITIO.EXE` links the production `EDITOR.OBJ` together with
+`KEYBOARD.OBJ` and `STRINGS.OBJ`, but deliberately not
+`VIDEO.OBJ`. Instead, the test file provides no-op `showline` and
+`showpage` stubs, so the file loading and saving code can run
+without the assembler display routines.
+
+The harness does not call `textedit`. It allocates an edit buffer
+of `MAXBYTES` bytes with a guard region on each side, fills the
+guards with a known pattern, and points the editor globals at the
+buffer. After each case it checks that the guards are unchanged
+and that the buffer pointers remain within bounds. This matters
+because DOS real mode has no memory protection: an out-of-bounds
+write usually corrupts memory silently rather than faulting, so an
+unchanged guard is the evidence that an operation stayed within
+the buffer.
+
+With no command-line argument, `TEDITIO` runs the safe cases:
+loading empty, one-byte, CRLF, LF-only, soft-CR, no-trailing-
+newline, and Ctrl+Z-terminated files, and a save round-trip for
+the `VERSION_M` build. These are expected to pass.
+
+### Boundary probes
+
+A single boundary probe can be run by passing its identifier, for
+example:
+
+```text
+BUILD\TESTS\TEDITIO P5
+```
+
+Each probe runs in its own process, so a hang or memory corruption
+in one probe cannot hide the results of the others. The probes
+assert the behaviour a correct implementation should have; a
+failing probe is a reproducible finding to be investigated and
+fixed separately, not a test to silence.
+
+| ID | Probe |
+|----|-------|
+| P1 | Empty file with a Ctrl+Z byte immediately before the buffer |
+| P2 | Load a 32767-byte file |
+| P3 | Load a 32768-byte file |
+| P4 | Load a 32769-byte file |
+| P5 | Load a file of exactly `MAXBYTES` (49152) bytes |
+| P6 | Load a file of `MAXBYTES` + 1 bytes |
+| P7 | Load a 50000-byte file |
+| P8 | Load a 5000-byte single line |
+
+The nonexistent-file and read/write-error paths are not covered:
+on error the editor displays a message and waits for a keypress,
+which would hang an unattended test.
 
 ## Manual Smoke Test
 
@@ -78,16 +132,15 @@ Do not modify the files under `examples/` while smoke testing.
 
 ## Deferred Test Work
 
-The following are intentionally not covered by this initial suite:
+The following are intentionally not covered yet:
 
-- editor-operation tests;
-- an editor-level DOS harness with stubbed `showline`/`showpage`;
-- guard-byte tests for reads or writes outside the edit buffer;
-- boundary tests for empty files and files around 32767 and
-  49152 bytes;
+- editor cursor and editing-operation tests;
 - maximum-length prompt and search-string input;
 - randomized or fuzz testing of editing operations;
-- investigation of the historically reported infrequent crash;
+- fixing any defect exposed by a boundary probe, and the wider
+  investigation of the historically reported infrequent crash;
+- the nonexistent-file and read/write-error paths (see above);
+- the non-`VERSION_M` save variant;
 - Borland compiler warning cleanup;
 - restructuring `EDITOR.C`.
 
