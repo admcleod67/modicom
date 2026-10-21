@@ -47,6 +47,7 @@ restructured:
 - `build/` — generated object files and executables (not source)
 - `examples/` — period files used to exercise the editor
 - `docs/` — project history and documentation
+- `tests/` — automated tests and manual smoke-test notes
 - `MODICOM.PRJ` / `MODICOM.DSK` — Borland project files at the root
 
 Future work on `main` may include:
@@ -72,6 +73,12 @@ and release artifacts are documented in `docs/history.md`.
 To rebuild the DOS version from the current `src/` layout with the
 original Borland toolchain, see `BUILD.md`. Build output is placed
 under `build/`.
+
+A small automated test suite lives in `tests/`. It builds
+separately from the editor and no test code is linked into
+`MODICOM.EXE`. See `tests/README.md` for instructions on building
+and running the tests in DOSBox, together with a manual smoke-test
+checklist.
 
 Original DOS executables for tagged releases (`v1.3.0`, `v1.4.0`,
 `v2.0.0`) are published as GitHub Release assets, not tracked in the
