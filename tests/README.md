@@ -13,7 +13,9 @@ The automated tests currently cover:
   `replace`, `rtrim`, and `linelen`, including CR and xBase soft
   carriage return (`0x8d`) line endings;
 - editor file loading and saving in `src/EDITOR.C` (`TEDITIO.EXE`),
-  described below.
+  described below;
+- individual editor cursor and editing operations in
+  `src/EDITOR.C` (`TEDITOPS.EXE`), also described below.
 
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
@@ -31,6 +33,7 @@ directory on `PATH`, run:
 MAKE -f TESTS\TESTS.MAK rebuild
 BUILD\TESTS\TSTRINGS
 BUILD\TESTS\TEDITIO
+BUILD\TESTS\TEDITOPS
 ```
 
 If Borland C++ is not installed in `C:\BORLANDC`, adjust `BORLANDC`
@@ -107,9 +110,49 @@ The nonexistent-file and read/write-error paths are not covered:
 on error the editor displays a message and waits for a keypress,
 which would hang an unattended test.
 
+## Editor Operation Tests (`TEDITOPS.EXE`)
+
+`TEDITOPS.EXE` uses the same link-with-stubs design and
+guard-banded buffer as `TEDITIO.EXE`, but instead of loading
+files it installs small documents directly in the editor's
+internal format (lines separated by carriage return and NUL, as
+produced by `loadfile` from a CRLF file), places the cursor by
+setting the editor globals, and calls individual operation
+functions such as `cursdown`, `inschar`, and `del`. After each
+operation it asserts the exact buffer contents, the cursor
+position, the line number and count, and the guard bytes.
+
+These tests verify buffer and cursor state only. The display
+routines are stubbed, so screen appearance is covered by the
+manual smoke test below, not by this suite.
+
+With no command-line argument, `TEDITOPS` runs the green cases:
+
+| Prefix | Group |
+|--------|-------|
+| `N` | Cursor navigation: character, line, word, and column movement |
+| `E` | Editing: insert, overwrite, newline, delete, backspace, tab |
+| `V` | Paging: `pageup` and `pagedown` on a six-line document |
+
+A single boundary probe can be run by passing its identifier, for
+example `BUILD\TESTS\TEDITOPS X4`. As with the IO probes, a
+failing probe is a reproducible finding to be fixed separately.
+
+| ID | Probe |
+|----|-------|
+| X1 | Beginning of line on the first line |
+| X2 | Last word at the start of the buffer |
+| X3 | Delete word at the final line ending |
+| X4 | Delete character at the very end of the buffer |
+| X5 | Insert a character with the buffer nearly full |
+
+Functions that depend on keyboard input (`find` prompting,
+`ctrlkey`, `abortedit`, and the `textedit` loop itself) are not
+covered by this suite.
+
 ## Manual Smoke Test
 
-Automated editor-level tests do not exist yet. Before publishing or
+Full interactive tests do not exist yet. Before publishing or
 after changes that affect the editor, work through this checklist
 in DOSBox using disposable copies of files for any operation that
 saves:
@@ -134,7 +177,6 @@ Do not modify the files under `examples/` while smoke testing.
 
 The following are intentionally not covered yet:
 
-- editor cursor and editing-operation tests;
 - maximum-length prompt and search-string input;
 - randomized or fuzz testing of editing operations;
 - fixing any defect exposed by a boundary probe, and the wider
