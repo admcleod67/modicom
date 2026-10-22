@@ -17,7 +17,9 @@ The automated tests currently cover:
 - individual editor cursor and editing operations in
   `src/EDITOR.C` (`TEDITOPS.EXE`), also described below;
 - keyboard input in `src/KEYBOARD.C` and `src/EDITOR.C`
-  (`TEDITIN.EXE`), also described below.
+  (`TEDITIN.EXE`), also described below;
+- video display routines in `src/VIDEO.ASM` (`TVIDEO.EXE`), also
+  described below.
 
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
@@ -37,6 +39,7 @@ BUILD\TESTS\TSTRINGS
 BUILD\TESTS\TEDITIO
 BUILD\TESTS\TEDITOPS
 BUILD\TESTS\TEDITIN
+BUILD\TESTS\TVIDEO
 ```
 
 If Borland C++ is not installed in `C:\BORLANDC`, adjust `BORLANDC`
@@ -126,8 +129,9 @@ operation it asserts the exact buffer contents, the cursor
 position, the line number and count, and the guard bytes.
 
 These tests verify buffer and cursor state only. The display
-routines are stubbed, so screen appearance is covered by the
-manual smoke test below, not by this suite.
+routines are stubbed here; their cell output is covered by
+`TVIDEO.EXE` below, and interactive appearance by the manual
+smoke test.
 
 With no command-line argument, `TEDITOPS` runs the green cases:
 
@@ -198,6 +202,52 @@ failing probe is a reproducible finding to be fixed separately.
 A `prompt` message long enough to make its computed length limit
 zero or negative is out of scope: no production message is longer
 than 17 characters, so that path cannot be reached today.
+
+## Video Display Tests (`TVIDEO.EXE`)
+
+`TVIDEO.EXE` links the production `VIDEO.OBJ` — assembled from
+`src/VIDEO.ASM` by the rule in `TESTS.MAK` — and calls `showline`
+and `showpage` directly. No other production objects are linked
+and there are no display stubs: the assembler routines are the
+subject under test.
+
+The routines write character/attribute cells to colour text-mode
+video RAM, deriving the start address from the BIOS cursor
+position. Each case therefore sets BIOS mode 3, fills the
+visible 4000-byte page and the memory after it with a sentinel
+cell, places the hardware cursor with the BIOS, and copies the
+region to a snapshot buffer immediately after the call, before
+any assertion can print to the same screen. Assertions inspect
+the snapshot only. The original video mode is restored on exit.
+
+Monochrome mode 7 is not covered: the video segment is cached
+inside `VIDEO.ASM` after first use and cannot be reset from C,
+and the editor's DOSBox environment is colour. Mono display
+remains covered by the manual smoke test.
+
+A rendered line ends with a `<` cell in column 79 when more
+buffer follows, and a space when the line is the last in the
+buffer; tests set the `endptr` argument deliberately to match
+the editor call being characterised.
+
+With no command-line argument, `TVIDEO` runs the green cases:
+
+| Prefix | Group |
+|--------|-------|
+| `S` | `showline`: end markers, CR and soft-CR, overlong lines, offsets |
+| `P` | `showpage`: multi-line pages, offsets, clearing, empty buffer |
+
+A single boundary probe can be run by passing its identifier, for
+example `BUILD\TESTS\TVIDEO D1`. As with the other suites, a
+failing probe is a reproducible finding to be fixed separately.
+
+| ID | Probe |
+|----|-------|
+| D1 | `showpage` end-of-buffer clearing past the visible page |
+| D2 | `showpage` with more lines than screen rows |
+| D3 | `showpage` starting on the last screen row |
+| D4 | `showline` starting in column 79 |
+| D5 | Exactly-fitting line marked as overlong |
 
 ## Manual Smoke Test
 
