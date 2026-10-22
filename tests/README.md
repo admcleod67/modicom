@@ -15,7 +15,9 @@ The automated tests currently cover:
 - editor file loading and saving in `src/EDITOR.C` (`TEDITIO.EXE`),
   described below;
 - individual editor cursor and editing operations in
-  `src/EDITOR.C` (`TEDITOPS.EXE`), also described below.
+  `src/EDITOR.C` (`TEDITOPS.EXE`), also described below;
+- keyboard input in `src/KEYBOARD.C` and `src/EDITOR.C`
+  (`TEDITIN.EXE`), also described below.
 
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
@@ -34,6 +36,7 @@ MAKE -f TESTS\TESTS.MAK rebuild
 BUILD\TESTS\TSTRINGS
 BUILD\TESTS\TEDITIO
 BUILD\TESTS\TEDITOPS
+BUILD\TESTS\TEDITIN
 ```
 
 If Borland C++ is not installed in `C:\BORLANDC`, adjust `BORLANDC`
@@ -146,9 +149,55 @@ failing probe is a reproducible finding to be fixed separately.
 | X4 | Delete character at the very end of the buffer |
 | X5 | Insert a character with the buffer nearly full |
 
-Functions that depend on keyboard input (`find` prompting,
-`ctrlkey`, `abortedit`, and the `textedit` loop itself) are not
-covered by this suite.
+Interactive dispatch (`ctrlkey`, `abortedit`, and the `textedit`
+loop itself) is not covered by this suite; keyboard input to
+`prompt` and `getline` is covered by `TEDITIN.EXE`, below.
+
+## Editor Input Tests (`TEDITIN.EXE`)
+
+`TEDITIN.EXE` links `EDITOR.OBJ`, `KEYBOARD.OBJ`, and
+`STRINGS.OBJ` and tests `getline` in `src/KEYBOARD.C` together
+with its production caller `prompt` in `src/EDITOR.C`.
+
+The test cannot stub `getkey`: `KEYBOARD.OBJ` already defines it,
+so a second definition would fail the link. Instead, keystrokes
+are scripted through the real BIOS keyboard path by placing key
+words in the BIOS keyboard buffer. Short scripts fit in the
+15-key buffer and are loaded before the call; longer scripts are
+topped up by an `INT 1Ch` timer-tick feeder installed for the
+duration of the call. A tick deadline injects Escape and flags a
+timeout if feeding stalls, so a scripting failure reports as a
+test failure rather than hanging. Every script ends with Return
+or Escape, because `getline` busy-waits for a key.
+
+Each case writes into a guard-banded destination buffer and
+asserts the return value, the exact resulting string, and the
+guard bytes. `getline` accepts at most `maxlen` characters and
+then writes its NUL terminator at the current position, so a
+caller must provide `maxlen + 1` writable bytes; several cases
+exist to pin down that contract.
+
+With no command-line argument, `TEDITIN` runs the green cases:
+
+| Prefix | Group |
+|--------|-------|
+| `L` | `getline`: typing, Escape, backspace, ignored keys, length limits |
+| `R` | `prompt`: production messages, trimming, return value, file-name limit |
+
+A single boundary probe can be run by passing its identifier, for
+example `BUILD\TESTS\TEDITIN B1`. As with the other suites, a
+failing probe is a reproducible finding to be fixed separately.
+
+| ID | Probe |
+|----|-------|
+| B1 | Search-string terminator at maximum length (73 characters) |
+| B2 | `getline` terminator with a `maxlen`-sized buffer |
+| B3 | Non-character keys (Up, F1) in `getline` |
+| B4 | Escape preserves the previous search string |
+
+A `prompt` message long enough to make its computed length limit
+zero or negative is out of scope: no production message is longer
+than 17 characters, so that path cannot be reached today.
 
 ## Manual Smoke Test
 
@@ -177,7 +226,6 @@ Do not modify the files under `examples/` while smoke testing.
 
 The following are intentionally not covered yet:
 
-- maximum-length prompt and search-string input;
 - randomized or fuzz testing of editing operations;
 - fixing any defect exposed by a boundary probe, and the wider
   investigation of the historically reported infrequent crash;
