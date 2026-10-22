@@ -48,6 +48,16 @@ Original DOS builds are attached to the GitHub release for `v2.0.0`:
 `MODICOM.20` is **v2.0**; `MODICOM.20M` and `MODICOM.EXE` are the
 same **v2.0m** image.
 
+## Unreleased development: 2.1
+
+After the deterministic test suites were completed, `main` was
+designated the unreleased **2.1** development line in preparation
+for fixing the defects those tests exposed. The program banner on
+`main` now reads `v2.1` (or `v2.1m` with `VERSION_M`, as this tree
+builds). There is no `modicom-v2.1` branch and no `v2.1.0` tag or
+release yet; 2.1 will be tagged only if and when it is released.
+The historic 2.0 series above is unchanged.
+
 ## Development note: `SHOWPAGE.C`
 
 `SHOWPAGE.C` appears to be an early C implementation of page display
@@ -74,7 +84,8 @@ preserved on the historic branches. Before the repository was made
 public, the main-line copyright notice was updated from Orkney
 Software Ltd to Allan McLeod, to whom the company's software rights
 had been transferred; historic branches, tags, and period release
-artifacts retain their original notices. Content on `main` remains
-the 2.0 baseline for modern ports and build-system work. Any later
+artifacts retain their original notices. Content on `main` was the
+2.0 baseline for modern ports and build-system work until it became
+the unreleased 2.1 development line (see above). Any later
 archive discovery would be handled as a new historic branch rather
 than extending this closed series.

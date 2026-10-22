@@ -1,8 +1,10 @@
 # Building ModiCom on `main` (DOS / Borland)
 
 The code on `main` is based on the ModiCom **2.0** historical sources,
-now kept under `src/`. It is still intended to be built with the
-original DOS toolchain, not a modern compiler.
+now kept under `src/`. It is now developed as the unreleased
+ModiCom **2.1** line, in preparation for defect fixes, and is still
+intended to be built with the original DOS toolchain, not a modern
+compiler.
 
 Frozen, version-specific copies of these notes live on the historic
 branches (`modicom-v1.3`, `modicom-v1.4`, `modicom-v2.0`), which keep
@@ -29,7 +31,7 @@ rather than a small patch:
   correspond to the `v2.0` and `v2.0m` variants.
 - Copyright text in the recovered `MODICOM.C` reads `1994-95`.
 
-### The `VERSION_M` (2.0 / 2.0m) switch
+### The `VERSION_M` (2.1 / 2.1m) switch
 
 `VERSION_M` is a compile-time switch. In this recovered tree it is
 turned on with a `#define VERSION_M` in `EDITOR.H`. The Borland
@@ -37,13 +39,13 @@ project file (`MODICOM.PRJ`) does not store a matching
 `-DVERSION_M` (or IDE “Defines”) entry; rebuilding in the IDE simply
 honours whatever is in that header.
 
-| | Without `VERSION_M` (`v2.0`) | With `VERSION_M` (`v2.0m`) |
+| | Without `VERSION_M` (`v2.1`) | With `VERSION_M` (`v2.1m`) |
 |--|------------------------------|----------------------------|
-| Banner | ModiCom … Editor v2.0 | ModiCom … Editor v2.0m |
+| Banner | ModiCom … Editor v2.1 | ModiCom … Editor v2.1m |
 | On save | Appends a DOS Ctrl+Z (`0x1A`) EOF byte | Writes buffer only — no Ctrl+Z |
 
 The save-path logic is in `src/EDITOR.C`. This tree ships with
-`VERSION_M` defined, so a straight rebuild produces the **2.0m**
+`VERSION_M` defined, so a straight rebuild produces the **2.1m**
 variant.
 
 ## Original toolset
@@ -130,9 +132,9 @@ If TASM reports `Error writing object file`, delete any existing
 `build\VIDEO.OBJ` and assemble again. A stale or unwritable object
 file can cause that failure even when TASM is on `PATH`.
 
-To build the non-`m` (`v2.0`) variant, remove or comment out
+To build the non-`m` (`v2.1`) variant, remove or comment out
 `#define VERSION_M` in `src/EDITOR.H`, then rebuild. Restore the
-define and rebuild for `v2.0m`. (Borland C++ 3.1 could also pass
+define and rebuild for `v2.1m`. (Borland C++ 3.1 could also pass
 `-DVERSION_M` via Options → Compiler → Defines; that approach is not
 used in the surviving project file.)
 

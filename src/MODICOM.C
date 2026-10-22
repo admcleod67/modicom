@@ -8,9 +8,9 @@
 void showuse(int parameters)
 {
    #ifdef VERSION_M
-      printf("\nModiCom xBase Programmer's Editor v2.0m\n");
+      printf("\nModiCom xBase Programmer's Editor v2.1m\n");
    #else
-      printf("\nModiCom xBase Programmer's Editor v2.0\n");
+      printf("\nModiCom xBase Programmer's Editor v2.1\n");
    #endif
 
    printf("Copyright (c) 1994-2026 Allan McLeod\n\n");

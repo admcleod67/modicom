@@ -19,8 +19,9 @@ This repository serves two purposes:
 
 The recovered historical sources have been imported onto dedicated
 branches and merged into `main`. Version **2.0** is the last of that
-historic series; further work on `main` is modernisation and porting
-(unless additional archives are found later).
+historic series; `main` is now the unreleased **2.1** development
+line, with further work on `main` being defect fixes, modernisation,
+and porting (unless additional archives are found later).
 
 ## Repository Structure
 

@@ -258,7 +258,7 @@ saves:
 
 1. Run a clean production build with `MAKE clean` followed by
    `MAKE`.
-2. Run `MODICOM /?` and confirm the expected `v2.0m` banner and
+2. Run `MODICOM /?` and confirm the expected `v2.1m` banner and
    `Copyright (c) 1994-2026 Allan McLeod` text.
 3. Open a period example file.
 4. Toggle help with F1 and back.
