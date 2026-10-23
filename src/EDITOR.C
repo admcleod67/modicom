@@ -501,7 +501,7 @@ void textwrite(char *fname)
    int out;
    char *ptr;
 
-   replace(start, end - start, '\0', '\n');
+   replace(start, (unsigned) (end - start), '\0', '\n');
 
    #ifndef VERSION_M
       *end = 0x1a;
@@ -513,9 +513,9 @@ void textwrite(char *fname)
       msg("Unable to write file (press SPACE) ");
 
    #ifdef VERSION_M
-      write(out, start, end - start);
+      write(out, start, (unsigned) (end - start));
    #else
-      write(out, start, end - start + 1);
+      write(out, start, (unsigned) (end - start) + 1);
    #endif
 
    close(out);
@@ -793,11 +793,11 @@ void tabulate()
 }
 
 
-int textread(char *fname, int create)
+unsigned textread(char *fname, int create)
 {
    char drive[MAXDRIVE], dir[MAXDIR], file[MAXFILE], ext[MAXEXT];
-   int in, bytes;
-   unsigned maxsize;
+   int in, nread;
+   unsigned maxsize, total, chunk;
 
    if (!(fnsplit(fname, drive, dir, file, ext) & EXTENSION))
       strcat(fname, ".prg");
@@ -810,36 +810,54 @@ int textread(char *fname, int create)
       return 0;
    }
 
-   maxsize = MAXBYTES - (end - start);
+   maxsize = MAXBYTES - (unsigned) (end - start);
 
    if ((long) filelength(in) > maxsize)
       toobig = TRUE;
 
-   if ((bytes = read(in, ptr, maxsize)) == - 1)
+   /* Borland's read() returns a signed int, so counts above 32767
+      must be accumulated in chunks that fit in a positive int. */
+   total = 0;
+   while (total < maxsize)
    {
-      msg("Error reading file (press SPACE) ");
-      return -1;
+      chunk = maxsize - total;
+      if (chunk > 32767)
+	 chunk = 32767;
+
+      nread = read(in, ptr + total, chunk);
+      if (nread == -1)
+      {
+	 close(in);
+	 msg("Error reading file (press SPACE) ");
+	 return (unsigned) -1;
+      }
+      if (nread == 0)
+	 break;
+
+      total += (unsigned) nread;
+      if ((unsigned) nread < chunk)
+	 break;
    }
 
    close(in);
 
-   if ((bytes > 0) && (*(ptr + bytes - 1) == 26))
-      bytes --;
+   if ((total > 0) && (*(ptr + total - 1) == 26))
+      total --;
 
-   return bytes;
+   return total;
 }
 
 
 void loadfile(char *fname)
 {
-   int bytes;
+   unsigned bytes;
 
    ptr = start;
    end = ptr;
 
    bytes = textread(fname, TRUE);
 
-   if (bytes <= 0)
+   if ((bytes == 0) || (bytes == (unsigned) -1))
    {
       lcount = 1;
    }
@@ -855,7 +873,8 @@ void loadfile(char *fname)
 
 void readfile()
 {
-   int nlines, bytes;
+   int nlines;
+   unsigned bytes;
    char fname[MAXPATH], *lastbyte, *nstart;
 
    if (prompt("Enter file name: ", fname))
@@ -864,7 +883,7 @@ void readfile()
       nstart = lastbyte - (end - ptr);
       memmove(nstart, ptr, (end - ptr) + 1);
       bytes = textread(fname, FALSE);
-      if (bytes < 0)
+      if (bytes == (unsigned) -1)
 	 bytes = 0;
 
       if (bytes > 0)
@@ -892,7 +911,7 @@ void writefile()
    if (prompt("Enter file name: ", fname))
    {
       textwrite(fname);
-      replace(start, end - start, '\n', '\0');
+      replace(start, (unsigned) (end - start), '\n', '\0');
       *end = '\0';
    }
 
@@ -1051,7 +1070,7 @@ int textedit(char *name)
 {
    int key, stop, bytes;
 
-   start = malloc(MAXBYTES);
+   start = malloc(MAXBYTES + 1);
 
    strcpy(fname, name);
 

@@ -5,6 +5,6 @@
 
 /* String function prototypes */
 
-int replace(char *str, int len, char srch, char repch);
+int replace(char *str, unsigned len, char srch, char repch);
 char *rtrim(char *sce);
 int linelen(unsigned char *ptr, unsigned char *start);

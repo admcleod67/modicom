@@ -68,7 +68,7 @@ static void fill_guards(void)
    for (i = 0; i < GUARD_SIZE; i ++)
    {
       rawbuffer[i] = GUARD_BYTE;
-      rawbuffer[GUARD_SIZE + MAXBYTES + i] = GUARD_BYTE;
+      rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] = GUARD_BYTE;
    }
 }
 
@@ -76,7 +76,7 @@ static void fill_guards(void)
 static void reset_state(void)
 {
    fill_guards();
-   memset(start, 0, MAXBYTES);
+   memset(start, 0, MAXBYTES + 1);
 
    ptr = start;
    end = start;
@@ -103,7 +103,7 @@ static void check_guards(void)
       if (rawbuffer[i] != GUARD_BYTE)
 	 bad ++;
 
-      if (rawbuffer[GUARD_SIZE + MAXBYTES + i] != GUARD_BYTE)
+      if (rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] != GUARD_BYTE)
 	 bad ++;
    }
 
@@ -425,7 +425,7 @@ static void probe_size_32769(void)
 }
 
 
-static void probe_size_maxbytes(void)
+static void case_size_maxbytes(void)
 {
    ASSERT_TRUE(write_repeat(IN_PATH, (long) MAXBYTES));
    load_fixture();
@@ -440,7 +440,7 @@ static void probe_size_maxbytes(void)
 }
 
 
-static void probe_size_maxbytes_plus_one(void)
+static void case_size_maxbytes_plus_one(void)
 {
    ASSERT_TRUE(write_repeat(IN_PATH, (long) MAXBYTES + 1L));
    load_fixture();
@@ -455,7 +455,7 @@ static void probe_size_maxbytes_plus_one(void)
 }
 
 
-static void probe_size_50000(void)
+static void case_size_50000(void)
 {
    ASSERT_TRUE(write_repeat(IN_PATH, 50000L));
    load_fixture();
@@ -497,7 +497,10 @@ static struct testcase green_cases[] =
    { "G6", "load without trailing newline", case_no_trailing_newline },
    { "G7", "load file ending with Ctrl+Z", case_final_ctrlz },
    { "G8", "save round-trip (VERSION_M)", case_save_roundtrip },
-   { "G9", "empty file, Ctrl+Z before buffer", case_empty_preceding_ctrlz }
+   { "G9", "empty file, Ctrl+Z before buffer", case_empty_preceding_ctrlz },
+   { "G10", "load exactly MAXBYTES", case_size_maxbytes },
+   { "G11", "load MAXBYTES + 1", case_size_maxbytes_plus_one },
+   { "G12", "load 50000 bytes", case_size_50000 }
 };
 
 static struct testcase probe_cases[] =
@@ -505,9 +508,6 @@ static struct testcase probe_cases[] =
    { "P2", "load 32767 bytes", probe_size_32767 },
    { "P3", "load 32768 bytes", probe_size_32768 },
    { "P4", "load 32769 bytes", probe_size_32769 },
-   { "P5", "load exactly MAXBYTES", probe_size_maxbytes },
-   { "P6", "load MAXBYTES + 1", probe_size_maxbytes_plus_one },
-   { "P7", "load 50000 bytes", probe_size_50000 },
    { "P8", "load 5000-byte single line", probe_long_line }
 };
 
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
 
    printf("EDITOR IO tests\n");
 
-   rawbuffer = (BYTE *) malloc((size_t) MAXBYTES +
+   rawbuffer = (BYTE *) malloc((size_t) MAXBYTES + 1 +
       (size_t) (2 * GUARD_SIZE));
 
    if (rawbuffer == NULL)

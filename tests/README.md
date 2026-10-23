@@ -84,8 +84,9 @@ the buffer.
 With no command-line argument, `TEDITIO` runs the safe cases:
 loading empty, one-byte, CRLF, LF-only, soft-CR, no-trailing-
 newline, and Ctrl+Z-terminated files, an empty file with a Ctrl+Z
-byte immediately before the buffer, and a save round-trip for
-the `VERSION_M` build. These are expected to pass.
+byte immediately before the buffer, full and oversized loads at
+the `MAXBYTES` limit (with correct `toobig` capping), and a save
+round-trip for the `VERSION_M` build. These are expected to pass.
 
 ### Boundary probes
 
@@ -93,7 +94,7 @@ A single boundary probe can be run by passing its identifier, for
 example:
 
 ```text
-BUILD\TESTS\TEDITIO P5
+BUILD\TESTS\TEDITIO P8
 ```
 
 Each probe runs in its own process, so a hang or memory corruption
@@ -107,9 +108,6 @@ fixed separately, not a test to silence.
 | P2 | Load a 32767-byte file |
 | P3 | Load a 32768-byte file |
 | P4 | Load a 32769-byte file |
-| P5 | Load a file of exactly `MAXBYTES` (49152) bytes |
-| P6 | Load a file of `MAXBYTES` + 1 bytes |
-| P7 | Load a 50000-byte file |
 | P8 | Load a 5000-byte single line |
 
 The nonexistent-file and read/write-error paths are not covered:
