@@ -100,7 +100,7 @@ static void fill_guards(void)
    for (i = 0; i < GUARD_SIZE; i ++)
    {
       rawbuffer[i] = GUARD_BYTE;
-      rawbuffer[GUARD_SIZE + MAXBYTES + i] = GUARD_BYTE;
+      rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] = GUARD_BYTE;
    }
 }
 
@@ -108,7 +108,7 @@ static void fill_guards(void)
 static void reset_state(void)
 {
    fill_guards();
-   memset(start, 0, MAXBYTES);
+   memset(start, 0, MAXBYTES + 1);
 
    ptr = start;
    end = start;
@@ -135,7 +135,7 @@ static void check_guards(void)
       if (rawbuffer[i] != GUARD_BYTE)
 	 bad ++;
 
-      if (rawbuffer[GUARD_SIZE + MAXBYTES + i] != GUARD_BYTE)
+      if (rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] != GUARD_BYTE)
 	 bad ++;
    }
 
@@ -832,7 +832,7 @@ static void case_delchar_final_end(void)
 }
 
 
-static void probe_inschar_near_full(void)
+static void case_inschar_near_full(void)
 {
    reset_state();
 
@@ -898,6 +898,7 @@ static struct testcase green_cases[] =
    { "E16", "delete word", case_delword_within },
    { "E17", "tabulate in insert mode", case_tabulate_insert },
    { "E18", "delete character at end of buffer", case_delchar_final_end },
+   { "E19", "insert with buffer nearly full", case_inschar_near_full },
    { "V1",  "page down, first page", case_pagedown_first },
    { "V2",  "page down to last line", case_pagedown_last },
    { "V3",  "page up", case_pageup },
@@ -908,8 +909,7 @@ static struct testcase probe_cases[] =
 {
    { "X1", "beginning of line on first line", probe_gotobol_first_line },
    { "X2", "last word at start of buffer", probe_lastword_at_start },
-   { "X3", "delete word at final line ending", probe_delword_final_eol },
-   { "X5", "insert with buffer nearly full", probe_inschar_near_full }
+   { "X3", "delete word at final line ending", probe_delword_final_eol }
 };
 
 #define GREEN_COUNT (sizeof(green_cases) / sizeof(green_cases[0]))
@@ -932,7 +932,7 @@ int main(int argc, char *argv[])
 
    printf("EDITOR OPERATION tests\n");
 
-   rawbuffer = (BYTE *) malloc((size_t) MAXBYTES +
+   rawbuffer = (BYTE *) malloc((size_t) MAXBYTES + 1 +
       (size_t) (2 * GUARD_SIZE));
 
    if (rawbuffer == NULL)

@@ -136,11 +136,11 @@ With no command-line argument, `TEDITOPS` runs the green cases:
 | Prefix | Group |
 |--------|-------|
 | `N` | Cursor navigation: character, line, word, and column movement |
-| `E` | Editing: insert, overwrite, newline, delete (including at buffer end), backspace, tab |
+| `E` | Editing: insert (including near-full buffer), overwrite, newline, delete (including at buffer end), backspace, tab |
 | `V` | Paging: `pageup` and `pagedown` on a six-line document |
 
 A single boundary probe can be run by passing its identifier, for
-example `BUILD\TESTS\TEDITOPS X5`. As with the IO probes, a
+example `BUILD\TESTS\TEDITOPS X3`. As with the IO probes, a
 failing probe is a reproducible finding to be fixed separately.
 
 | ID | Probe |
@@ -148,7 +148,6 @@ failing probe is a reproducible finding to be fixed separately.
 | X1 | Beginning of line on the first line |
 | X2 | Last word at the start of the buffer |
 | X3 | Delete word at the final line ending |
-| X5 | Insert a character with the buffer nearly full |
 
 Interactive dispatch (`ctrlkey`, `abortedit`, and the `textedit`
 loop itself) is not covered by this suite; keyboard input to
