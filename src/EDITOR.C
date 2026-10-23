@@ -1019,7 +1019,7 @@ int find(char *srchstr)
 
 void ctrlkey(char *name)
 {
-   static char srchstr[MAXSEARCH] = "\0";
+   static char srchstr[MAXSEARCH + 1] = "\0";
    unsigned key;
 
    while(!(key = getkey()));

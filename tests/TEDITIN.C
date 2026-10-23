@@ -453,7 +453,7 @@ static void case_prompt_find(void)
    unsigned script[16];
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "hello", KEY_RETURN));
    ASSERT_EQ_INT(1, result);
@@ -479,7 +479,7 @@ static void case_prompt_empty(void)
    unsigned script[4];
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "", KEY_RETURN));
    ASSERT_EQ_INT(0, result);
@@ -492,7 +492,7 @@ static void case_prompt_escape(void)
    unsigned script[16];
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "ab", KEY_ESC));
    ASSERT_EQ_INT(0, result);
@@ -505,7 +505,7 @@ static void case_prompt_trailing_spaces(void)
    unsigned script[16];
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "abc   ", KEY_RETURN));
    ASSERT_EQ_INT(1, result);
@@ -518,7 +518,7 @@ static void case_prompt_spaces_only(void)
    unsigned script[16];
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "   ", KEY_RETURN));
    ASSERT_EQ_INT(0, result);
@@ -531,7 +531,7 @@ static void case_prompt_leading_spaces(void)
    unsigned script[16];
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "  a b ", KEY_RETURN));
    ASSERT_EQ_INT(1, result);
@@ -544,7 +544,7 @@ static void case_prompt_backspace(void)
    unsigned script[] = { 'a', 'b', KEY_BS, 'c', KEY_RETURN };
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script, 5);
    ASSERT_EQ_INT(1, result);
    dest_check_string("ac");
@@ -571,7 +571,7 @@ static void case_prompt_filename_max(void)
 
 /* Boundary probes */
 
-static void probe_search_terminator(void)
+static void case_search_terminator(void)
 {
    static char text[74];
    unsigned script[80];
@@ -581,26 +581,12 @@ static void probe_search_terminator(void)
       text[i] = (char) ('a' + (i % 26));
    text[73] = '\0';
 
-   /* Buffer exactly as in ctrlkey: static char srchstr[MAXSEARCH]. */
-   dest_prepare(MAXSEARCH);
+   /* Buffer matches ctrlkey: static char srchstr[MAXSEARCH + 1]. */
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, text, KEY_RETURN));
    ASSERT_EQ_INT(1, result);
    dest_check_string(text);
-}
-
-
-static void probe_getline_terminator(void)
-{
-   unsigned script[16];
-   unsigned key;
-
-   /* Destination of exactly maxlen bytes: no room for terminator. */
-   dest_prepare(5);
-   key = call_getline(script,
-      script_from_text(script, "abcde", KEY_RETURN), 5);
-   ASSERT_EQ_INT(K_RETURN, key);
-   dest_check_string("abcde");
 }
 
 
@@ -621,7 +607,7 @@ static void probe_escape_preserves(void)
    unsigned script[16];
    int result;
 
-   dest_prepare(MAXSEARCH);
+   dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "old", KEY_RETURN));
    ASSERT_EQ_INT(1, result);
@@ -658,13 +644,12 @@ static struct testcase green_cases[] =
    { "R6",  "prompt spaces only", case_prompt_spaces_only },
    { "R7",  "prompt leading spaces kept", case_prompt_leading_spaces },
    { "R8",  "prompt backspace editing", case_prompt_backspace },
-   { "R9",  "prompt file name at maximum length", case_prompt_filename_max }
+   { "R9",  "prompt file name at maximum length", case_prompt_filename_max },
+   { "R10", "search-string terminator at maximum length", case_search_terminator }
 };
 
 static struct testcase probe_cases[] =
 {
-   { "B1", "search-string terminator at maximum length", probe_search_terminator },
-   { "B2", "getline terminator with maxlen-sized buffer", probe_getline_terminator },
    { "B3", "non-character keys in getline", probe_extended_keys },
    { "B4", "Escape preserves previous search string", probe_escape_preserves }
 };
