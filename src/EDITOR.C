@@ -607,7 +607,7 @@ void delchar()
 
    if (x > len)
    {
-      if ((ptr + 1) != end)
+      if ((end - ptr) >= 2)
       {
 	 memmove(ptr, ptr + 2, end - ptr);
 	 end -= 2;

@@ -815,7 +815,7 @@ static void probe_delword_final_eol(void)
 }
 
 
-static void probe_delchar_final_end(void)
+static void case_delchar_final_end(void)
 {
    install_document(doc3, (int) sizeof(doc3) - 1, 3);
    place_cursor(3, 6, 3);
@@ -825,7 +825,9 @@ static void probe_delchar_final_end(void)
    /* Nothing should change at the very end of the buffer, and the
       cursor must not end up beyond end */
    ASSERT_TRUE(ptr <= end);
+   check_buffer(doc3, (int) sizeof(doc3) - 1);
    check_state(15, 6, 3, 3, 3);
+   ASSERT_EQ_INT(FALSE, changed);
    check_invariants();
 }
 
@@ -895,6 +897,7 @@ static struct testcase green_cases[] =
    { "E15", "delete last line", case_del_last_line },
    { "E16", "delete word", case_delword_within },
    { "E17", "tabulate in insert mode", case_tabulate_insert },
+   { "E18", "delete character at end of buffer", case_delchar_final_end },
    { "V1",  "page down, first page", case_pagedown_first },
    { "V2",  "page down to last line", case_pagedown_last },
    { "V3",  "page up", case_pageup },
@@ -906,7 +909,6 @@ static struct testcase probe_cases[] =
    { "X1", "beginning of line on first line", probe_gotobol_first_line },
    { "X2", "last word at start of buffer", probe_lastword_at_start },
    { "X3", "delete word at final line ending", probe_delword_final_eol },
-   { "X4", "delete character at end of buffer", probe_delchar_final_end },
    { "X5", "insert with buffer nearly full", probe_inschar_near_full }
 };
 
