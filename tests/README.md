@@ -83,7 +83,8 @@ the buffer.
 
 With no command-line argument, `TEDITIO` runs the safe cases:
 loading empty, one-byte, CRLF, LF-only, soft-CR, no-trailing-
-newline, and Ctrl+Z-terminated files, and a save round-trip for
+newline, and Ctrl+Z-terminated files, an empty file with a Ctrl+Z
+byte immediately before the buffer, and a save round-trip for
 the `VERSION_M` build. These are expected to pass.
 
 ### Boundary probes
@@ -103,7 +104,6 @@ fixed separately, not a test to silence.
 
 | ID | Probe |
 |----|-------|
-| P1 | Empty file with a Ctrl+Z byte immediately before the buffer |
 | P2 | Load a 32767-byte file |
 | P3 | Load a 32768-byte file |
 | P4 | Load a 32769-byte file |

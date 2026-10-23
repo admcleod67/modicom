@@ -823,7 +823,7 @@ int textread(char *fname, int create)
 
    close(in);
 
-   if (*(ptr + bytes - 1) == 26)
+   if ((bytes > 0) && (*(ptr + bytes - 1) == 26))
       bytes --;
 
    return bytes;
@@ -837,7 +837,9 @@ void loadfile(char *fname)
    ptr = start;
    end = ptr;
 
-   if (!(bytes = textread(fname, TRUE)))
+   bytes = textread(fname, TRUE);
+
+   if (bytes <= 0)
    {
       lcount = 1;
    }
@@ -861,7 +863,11 @@ void readfile()
       lastbyte = start + MAXBYTES;
       nstart = lastbyte - (end - ptr);
       memmove(nstart, ptr, (end - ptr) + 1);
-      if((bytes = textread(fname, FALSE)) != 0)
+      bytes = textread(fname, FALSE);
+      if (bytes < 0)
+	 bytes = 0;
+
+      if (bytes > 0)
       {
 	 nlines = replace(ptr, bytes, '\n', '\0');
 	 lcount += nlines;

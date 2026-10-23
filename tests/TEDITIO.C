@@ -354,9 +354,7 @@ static void case_save_roundtrip(void)
 }
 
 
-/* Boundary probes: run individually by case identifier */
-
-static void probe_empty_preceding_ctrlz(void)
+static void case_empty_preceding_ctrlz(void)
 {
    /* Place Ctrl+Z immediately before the edit buffer, then load an
       empty file. Loading should not consult or modify that byte. */
@@ -379,6 +377,8 @@ static void probe_empty_preceding_ctrlz(void)
    remove(IN_PATH);
 }
 
+
+/* Boundary probes: run individually by case identifier */
 
 static void probe_size_32767(void)
 {
@@ -496,12 +496,12 @@ static struct testcase green_cases[] =
    { "G5", "load soft carriage return line", case_soft_cr },
    { "G6", "load without trailing newline", case_no_trailing_newline },
    { "G7", "load file ending with Ctrl+Z", case_final_ctrlz },
-   { "G8", "save round-trip (VERSION_M)", case_save_roundtrip }
+   { "G8", "save round-trip (VERSION_M)", case_save_roundtrip },
+   { "G9", "empty file, Ctrl+Z before buffer", case_empty_preceding_ctrlz }
 };
 
 static struct testcase probe_cases[] =
 {
-   { "P1", "empty file, Ctrl+Z before buffer", probe_empty_preceding_ctrlz },
    { "P2", "load 32767 bytes", probe_size_32767 },
    { "P3", "load 32768 bytes", probe_size_32768 },
    { "P4", "load 32769 bytes", probe_size_32769 },
