@@ -44,6 +44,7 @@
 /* Functions under test (defined in EDITOR.C / KEYBOARD.C) */
 
 int prompt(char *msg, char *str);
+int findprompt(char *srchstr);
 /* getline and getkey come from keyboard.h */
 
 
@@ -280,6 +281,18 @@ static int call_prompt(const char *msg, const unsigned *script, int count)
 }
 
 
+static int call_findprompt(const unsigned *script, int count)
+{
+   int result;
+
+   script_begin(script, count);
+   result = findprompt(dest);
+   script_end();
+   ASSERT_EQ_INT(0, feed_timed_out);
+   return result;
+}
+
+
 /* getline cases */
 
 static void case_getline_plain(void)
@@ -492,6 +505,8 @@ static void case_prompt_escape(void)
    unsigned script[16];
    int result;
 
+   /* Raw prompt leaves typed text in dest on Escape; Find cancel-safety
+    * is in findprompt (R11). */
    dest_prepare(MAXSEARCH + 1);
    result = call_prompt("Find? ", script,
       script_from_text(script, "ab", KEY_ESC));
@@ -602,19 +617,19 @@ static void probe_extended_keys(void)
 }
 
 
-static void probe_escape_preserves(void)
+static void case_findprompt_escape_preserves(void)
 {
    unsigned script[16];
    int result;
 
    dest_prepare(MAXSEARCH + 1);
-   result = call_prompt("Find? ", script,
+   result = call_findprompt(script,
       script_from_text(script, "old", KEY_RETURN));
    ASSERT_EQ_INT(1, result);
    dest_check_string("old");
 
-   /* A cancelled prompt should leave the stored string unchanged. */
-   result = call_prompt("Find? ", script,
+   /* A cancelled Find should leave the stored string unchanged. */
+   result = call_findprompt(script,
       script_from_text(script, "x", KEY_ESC));
    ASSERT_EQ_INT(0, result);
    dest_check_string("old");
@@ -645,13 +660,13 @@ static struct testcase green_cases[] =
    { "R7",  "prompt leading spaces kept", case_prompt_leading_spaces },
    { "R8",  "prompt backspace editing", case_prompt_backspace },
    { "R9",  "prompt file name at maximum length", case_prompt_filename_max },
-   { "R10", "search-string terminator at maximum length", case_search_terminator }
+   { "R10", "search-string terminator at maximum length", case_search_terminator },
+   { "R11", "findprompt Escape preserves previous search string", case_findprompt_escape_preserves }
 };
 
 static struct testcase probe_cases[] =
 {
-   { "B3", "non-character keys in getline", probe_extended_keys },
-   { "B4", "Escape preserves previous search string", probe_escape_preserves }
+   { "B3", "non-character keys in getline", probe_extended_keys }
 };
 
 #define GREEN_COUNT (sizeof(green_cases) / sizeof(green_cases[0]))

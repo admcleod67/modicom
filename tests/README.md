@@ -182,20 +182,22 @@ With no command-line argument, `TEDITIN` runs the green cases:
 | Prefix | Group |
 |--------|-------|
 | `L` | `getline`: typing, Escape, backspace, ignored keys, length limits |
-| `R` | `prompt`: production messages, trimming, return value, file-name and max-length Find limits (`R10`) |
+| `R` | `prompt` / `findprompt`: production messages, trimming, return value, file-name and max-length Find limits, Find cancel (`R11`) |
 
 Green `L10` pins the `maxlen + 1` terminator contract for
 `getline`; `R10` covers a 73-character Find string into a
 `MAXSEARCH + 1` destination matching production `srchstr`.
+`R4` pins raw `prompt` Escape behaviour (typed text left in the
+caller buffer); Find cancel-safety is covered by `findprompt` in
+`R11`.
 
 A single boundary probe can be run by passing its identifier, for
-example `BUILD\TESTS\TEDITIN B4`. As with the other suites, a
+example `BUILD\TESTS\TEDITIN B3`. As with the other suites, a
 failing probe is a reproducible finding to be fixed separately.
 
 | ID | Probe |
 |----|-------|
 | B3 | Non-character keys (Up, F1) in `getline` |
-| B4 | Escape preserves the previous search string |
 
 A `prompt` message long enough to make its computed length limit
 zero or negative is out of scope: no production message is longer

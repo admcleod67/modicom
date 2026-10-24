@@ -938,6 +938,18 @@ int prompt(char *msg, char *str)
 }
 
 
+int findprompt(char *srchstr)
+{
+   char buf[MAXSEARCH + 1];
+
+   if (!prompt("Find? ", buf))
+      return 0;
+
+   strcpy(srchstr, buf);
+   return 1;
+}
+
+
 int find(char *srchstr)
 {
    int found, xpos, ypos, line;
@@ -1031,7 +1043,7 @@ void ctrlkey(char *name)
       case 'f':
 
       case K_CTRL_F:
-	 if (prompt("Find? ", srchstr))
+	 if (findprompt(srchstr))
 	 {
 	    if (find(srchstr))
 	       scoreboard();
