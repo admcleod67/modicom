@@ -80,6 +80,13 @@ brief:
 Each fix was covered by promoting the failing probe into its suite's
 green run. All green suites report 0 failures on the current tree.
 
+The former monolithic `EDITOR.C` was then split, without intentional
+behaviour change, into a thin Core (`textedit`, `ctrlkey`, session
+abort) plus Status, Navigate, Edit, File I/O, Search, and Prompt
+modules; Keyboard, Strings, and Video remain as before. Aligning the
+green suites more closely with those module boundaries is follow-on
+work.
+
 ## Development note: `SHOWPAGE.C`
 
 `SHOWPAGE.C` appears to be an early C implementation of page display

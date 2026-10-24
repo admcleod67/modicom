@@ -1,17 +1,10 @@
 #include <stdio.h>
-#include <io.h>
-#include <dir.h>
 #include <conio.h>
-#include <ctype.h>
 #include <bios.h>
 #include <alloc.h>
-#include <fcntl.h>
-#include <process.h>
-#include <sys\stat.h>
 #include <string.h>
 #include "editor.h"
 #include "keyboard.h"
-#include "strings.h"
 #include "video.h"
 #include "status.h"
 #include "navigate.h"

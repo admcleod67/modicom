@@ -149,7 +149,7 @@ failing probe is a reproducible finding to be fixed separately.
 | X2 | Last word at the start of the buffer |
 | X3 | Delete word at the final line ending |
 
-Interactive dispatch (`ctrlkey`, `abortedit`, and the `textedit`
+Interactive dispatch (`ctrlkey`, Core `abortedit`, and the `textedit`
 loop itself) is not covered by this suite; keyboard input to
 `prompt` and `getline` is covered by `TEDITIN.EXE`, below.
 
@@ -157,7 +157,7 @@ loop itself) is not covered by this suite; keyboard input to
 
 `TEDITIN.EXE` links `EDITOR.OBJ`, `KEYBOARD.OBJ`, and
 `STRINGS.OBJ` and tests `getline` in `src/KEYBOARD.C` together
-with its production caller `prompt` in `src/EDITOR.C`.
+with its production caller `prompt` in `src/PROMPT.C`.
 
 The test cannot stub `getkey`: `KEYBOARD.OBJ` already defines it,
 so a second definition would fail the link. Instead, keystrokes
