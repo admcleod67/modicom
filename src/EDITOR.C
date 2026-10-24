@@ -14,212 +14,21 @@
 #include "strings.h"
 #include "video.h"
 #include "status.h"
-
+#include "navigate.h"
 
 BYTE *start, *ptr, *end, fname[MAXPATH];
 int x, y, lineno, lcount, changed, insert, maxrow, toobig;
 
-void lineup(void);
-int  linedown(void);
-void cursup(void);
-void cursdown(void);
-void cursleft(void);
-void cursright(void);
-void pageup(void);
-void pagedown(void);
-void scrollup(void);
 void del(void);
 void addline(void);
 int  abortedit(void);
 void backspace(void);
 void delchar(void);
 void delword(void);
-void nextword(void);
-void lastword(void);
-void gotoeol(void);
-void gotobol(void);
 void tabulate(void);
 void readfile(void);
 void writefile(void);
 int  prompt(char *msg, char *str);
-
-
-void lineup(void)
-{
-   while (*(-- ptr));
-
-   while (*(ptr - 1))
-   {
-      if (ptr == start)
-	 break;
-      ptr --;
-   }
-
-   if (y == MIN_ROW)
-   {
-      gotoxy(MIN_COL, MIN_ROW);
-      insline();
-      showline(ptr, end);
-   }
-   else
-      y --;
-
-    lineno --;
-}
-
-
-int linedown(void)
-{
-   while (*(ptr ++));
-
-   if (y == maxrow)
-   {
-      gotoxy(MIN_COL, MIN_ROW);
-      delline();
-      gotoxy(MIN_COL, maxrow);
-      showline(ptr, end);
-   }
-   else
-      y ++;
-
-   lineno ++;
-
-   return 1;
-}
-
-
-void gotocol(int col)
-{
-   int len;
-
-   len = linelen(ptr, start);
-   x = (col > len) ? len + 1 : col;
-   ptr += (x - 1);
-}
-
-
-void cursup(void)
-{
-   if (lineno > 1)
-   {
-      lineup();
-      gotocol(x);
-   }
-}
-
-
-void cursdown(void)
-{
-   if (lineno < lcount)
-   {
-      linedown();
-      gotocol(x);
-   }
-}
-
-
-void cursleft(void)
-{
-   if (ptr != start)
-   {
-      if (!*(ptr - 1))
-      {
-	 lineup();
-	 gotocol(80);
-      }
-      else
-      {
-	 x --;
-	 ptr --;
-      }
-   }
-}
-
-
-void cursright(void)
-{
-   if ((ptr != end) && (x < 80))
-   {
-      if (iseol(*ptr))
-      {
-	 linedown();
-	 x = 1;
-      }
-      else
-      {
-	 x ++;
-	 ptr ++;
-      }
-   }
-}
-
-
-int gotorow(int row)
-{
-   int i;
-
-   for (i = row - 1; i; i --)
-   {
-      while (*ptr ++);
-      lineno ++;
-      if (lineno == lcount)
-	 break;
-   }
-
-   return (i ? i - 1: 0);
-}
-
-
-void pageup(void)
-{
-   int i;
-
-   if (lineno > 1)
-   {
-      while (*(ptr - 1))
-	 ptr --;
-
-      for (i = (maxrow + y) - 1; i; i --)
-      {
-	 do
-	 {
-	    if (ptr == start)
-	       break;
-	    ptr --;
-	 }
-	 while (*(ptr - 1));
-
-	 if (lineno == 1)
-	    break;
-	 lineno --;
-      }
-
-      x = MIN_COL;
-      gotoxy(x, MIN_ROW);
-      showpage(ptr, end);
-      gotorow(y);
-   }
-}
-
-
-void pagedown(void)
-{
-   int i;
-
-   if (lineno < lcount)
-   {
-      gotorow(maxrow - y + 2);
-      x = MIN_COL;
-      gotoxy(x, MIN_ROW);
-      showpage(ptr, end);
-
-      if (lineno < lcount)
-	 y -= gotorow(y);
-      else
-	 y = MIN_ROW;
-   }
-}
-
 
 void inschar(int ch)
 {
@@ -255,34 +64,6 @@ void inschar(int ch)
       }
    }
 }
-
-
-void scrollup(void)
-{
-   char *str;
-   int line, i;
-
-   str = ptr;
-   line = lineno;
-
-   for (i = y; i < maxrow; i ++)
-   {
-      while (*str ++);
-      line ++;
-      if (line > lcount)
-	 break;
-   }
-
-   gotoxy(MIN_COL, y + 1);
-   delline();
-
-   if (i == maxrow)
-   {
-      gotoxy(1, i);
-      showline(str, end);
-   }
-}
-
 
 void del(void)
 {
@@ -323,7 +104,6 @@ void del(void)
       changed = TRUE;
    }
 }
-
 
 void newline(int insert)
 {
@@ -368,7 +148,6 @@ void newline(int insert)
    }
 }
 
-
 void addline(void)
 {
    if ((end + 1) < (start + MAXBYTES))
@@ -391,7 +170,6 @@ void addline(void)
       changed = TRUE;
    }
 }
-
 
 void textwrite(char *fname)
 {
@@ -418,7 +196,6 @@ void textwrite(char *fname)
    close(out);
 }
 
-
 int abortedit(void)
 {
    int key;
@@ -442,7 +219,6 @@ int abortedit(void)
 
    return TRUE;
 }
-
 
 void backspace(void)
 {
@@ -495,7 +271,6 @@ void backspace(void)
    }
 }
 
-
 void delchar(void)
 {
    int len;
@@ -532,7 +307,6 @@ void delchar(void)
    }
 }
 
-
 void delword(void)
 {
    BYTE *str;
@@ -567,83 +341,6 @@ void delword(void)
       changed = TRUE;
    }
 }
-
-
-void nextword(void)
-{
-   if (iseol(*ptr))
-   {
-      if (ptr != end && x < 80)
-      {
-	 linedown();
-	 x = 1;
-      }
-   }
-   else
-   {
-      while (!iseol(*ptr) && x < 80)
-      {
-	 x ++;
-	 if (isspace(*ptr ++))
-	    break;
-      }
-
-      while (isspace(*ptr) && x < 80)
-      {
-	 ptr ++;
-	 x ++;
-      }
-   }
-}
-
-
-void lastword(void)
-{
-   while (ptr > start)
-   {
-      if (!*(ptr - 1) || !isspace(*(ptr - 1)))
-	 break;
-      x --;
-      ptr --;
-   }
-
-   if (!*(ptr - 1))
-   {
-      lineup();
-      gotocol(80);
-   }
-
-   while (ptr > start)
-   {
-      if (!*(ptr - 1) || isspace(*(ptr - 1)))
-	 break;
-      x --;
-      ptr --;
-   }
-}
-
-
-void gotoeol(void)
-{
-   while (!iseol(*ptr) && x < 80)
-   {
-      ptr ++;
-      x ++;
-   }
-}
-
-
-void gotobol(void)
-{
-   while (*(ptr -1))
-   {
-      if (ptr == start)
-	 break;
-      ptr --;
-      x --;
-   }
-}
-
 
 void tabulate(void)
 {
@@ -688,7 +385,6 @@ void tabulate(void)
    else
       putchar(BELL);
 }
-
 
 unsigned textread(char *fname, int create)
 {
@@ -744,7 +440,6 @@ unsigned textread(char *fname, int create)
    return total;
 }
 
-
 void loadfile(char *fname)
 {
    unsigned bytes;
@@ -766,7 +461,6 @@ void loadfile(char *fname)
 
    *end = '\0';
 }
-
 
 void readfile(void)
 {
@@ -800,7 +494,6 @@ void readfile(void)
    scoreboard();
 }
 
-
 void writefile(void)
 {
    char fname[MAXPATH];
@@ -814,7 +507,6 @@ void writefile(void)
 
    scoreboard();
 }
-
 
 int prompt(char *msg, char *str)
 {
@@ -834,7 +526,6 @@ int prompt(char *msg, char *str)
    return *str && (key != K_ESC);
 }
 
-
 int findprompt(char *srchstr)
 {
    char buf[MAXSEARCH + 1];
@@ -845,7 +536,6 @@ int findprompt(char *srchstr)
    strcpy(srchstr, buf);
    return 1;
 }
-
 
 int find(char *srchstr)
 {
@@ -925,7 +615,6 @@ int find(char *srchstr)
    return found;
 }
 
-
 void ctrlkey(void)
 {
    static char srchstr[MAXSEARCH + 1] = "\0";
@@ -973,7 +662,6 @@ void ctrlkey(void)
 	 writefile();
    }
 }
-
 
 int textedit(char *name)
 {
