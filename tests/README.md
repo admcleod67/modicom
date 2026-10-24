@@ -230,20 +230,13 @@ buffer follows, and a space when the line is the last in the
 buffer; tests set the `endptr` argument deliberately to match
 the editor call being characterised.
 
-With no command-line argument, `TVIDEO` runs the green cases:
+`TVIDEO` runs the green cases only (all former video boundary
+probes have been promoted):
 
 | Prefix | Group |
 |--------|-------|
-| `S` | `showline`: end markers, CR and soft-CR, overlong lines, offsets, column 79 |
+| `S` | `showline`: end markers, CR and soft-CR, overlong lines, offsets, column 79, exact fit (`S10`), empty at column 79 (`S11`) |
 | `P` | `showpage`: multi-line pages, offsets, clearing, empty buffer, bottom-row bounds (`P7`–`P9`) |
-
-A single boundary probe can be run by passing its identifier, for
-example `BUILD\TESTS\TVIDEO D5`. As with the other suites, a
-failing probe is a reproducible finding to be fixed separately.
-
-| ID | Probe |
-|----|-------|
-| D5 | Exactly-fitting line marked as overlong |
 
 ## Manual Smoke Test
 

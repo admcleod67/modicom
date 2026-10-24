@@ -110,7 +110,7 @@ PROC    ScPokeLine
 
 	mov     ah, 07h			; Assign attribute to ah
 	cld
-	jcxz	@@25			; No room for characters: marker only
+	jcxz	@@25			; No room: peek, then marker if needed
 @@10:
 	lodsb                           ; Get next character
 	or	al, al                  ; NULL terminator?
@@ -125,8 +125,16 @@ PROC    ScPokeLine
 	stosw                           ; Otherwise display it
 	loop	@@10                    ; Until max line length
 @@25:
-	mov	al, '+'                 ; Set al to long line
-	stosw                           ; marker & display it
+	lodsb				; Peek next byte, skipping CRs
+	cmp	al, 0dh
+	je	@@25
+	dec	si			; Unread it (DF clear)
+	or	al, al
+	jz	@@10			; Exact end: normal terminator
+	cmp	al, 8dh
+	je	@@10			; Soft break: exact end of this row
+	mov	al, '+'                 ; Displayable byte hidden: marker
+	stosw                           ; and display it
 	mov	cx, 0ffffh              ; Set max search length
 @@30:
 	lodsb                           ; Get next character

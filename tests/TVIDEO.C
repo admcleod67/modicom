@@ -7,10 +7,8 @@
  * and copied to a snapshot buffer immediately after the call
  * under test, before any assertion can print to the same screen.
  *
- * With no command-line argument, runs the safe (green) cases.
- * With a case identifier argument, runs only that boundary probe,
- * so corruption of video memory in one probe cannot hide the
- * results of the others.
+ * All known boundary cases for this suite are now green; the
+ * executable runs the full green suite with no probe argument.
  */
 
 #include <stdio.h>
@@ -594,10 +592,11 @@ static void case_showline_col79(void)
 }
 
 
-static void probe_exact_fit(void)
+static void case_showline_exact_fit(void)
 {
    static char doc[128];
-   int i, bad;
+   char expected[COLS + 1];
+   int i;
 
    make_long_doc(doc, 79, "z");
    screen_fill_sentinel();
@@ -605,15 +604,30 @@ static void probe_exact_fit(void)
    showline(doc, doc + 80);
    snapshot_screen();
 
-   bad = 0;
+   row_sentinel(expected);
    for (i = 0; i < 79; i ++)
-   {
-      if (cell_char(0, i) != 'A' + (i % 26))
-	 bad ++;
-   }
-   ASSERT_EQ_INT(0, bad);
-   /* No character is hidden, so no truncation marker is expected. */
-   ASSERT_TRUE(cell_char(0, 79) != '+');
+      expected[i] = (char) ('A' + (i % 26));
+   expected[79] = '<';
+   check_row(0, expected);
+   check_rows_sentinel(1, 24);
+   check_beyond_page();
+}
+
+
+static void case_showline_col79_empty(void)
+{
+   char expected[COLS + 1];
+
+   screen_fill_sentinel();
+   set_cursor(5, 79);
+   showline(doc_empty, doc_empty + 4);
+   snapshot_screen();
+
+   row_sentinel(expected);
+   expected[79] = '<';
+   check_row(5, expected);
+   check_rows_sentinel(6, 24);
+   check_beyond_page();
 }
 
 
@@ -628,6 +642,8 @@ static struct testcase green_cases[] =
    { "S7", "showline at column offset", case_showline_offset },
    { "S8", "showline on last row", case_showline_lastrow },
    { "S9", "showline starting in column 79", case_showline_col79 },
+   { "S10", "showline exactly-fitting line marker", case_showline_exact_fit },
+   { "S11", "showline empty line at column 79", case_showline_col79_empty },
    { "P1", "showpage three lines", case_showpage_three },
    { "P2", "showpage from middle row", case_showpage_mid },
    { "P3", "showpage at column offset", case_showpage_offset },
@@ -639,13 +655,7 @@ static struct testcase green_cases[] =
    { "P9", "showpage starting on last row", case_showpage_last_row }
 };
 
-static struct testcase probe_cases[] =
-{
-   { "D5", "showline exactly-fitting line marker", probe_exact_fit }
-};
-
 #define GREEN_COUNT (sizeof(green_cases) / sizeof(green_cases[0]))
-#define PROBE_COUNT (sizeof(probe_cases) / sizeof(probe_cases[0]))
 
 
 static void run_case(struct testcase *testcase)
@@ -657,10 +667,9 @@ static void run_case(struct testcase *testcase)
 }
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
    unsigned int i;
-   struct testcase *only;
    int result;
 
    printf("VIDEO DISPLAY tests\n");
@@ -668,35 +677,8 @@ int main(int argc, char *argv[])
    saved_mode = get_video_mode();
    set_video_mode(3);
 
-   if (argc > 1)
-   {
-      only = NULL;
-
-      for (i = 0; i < PROBE_COUNT; i ++)
-      {
-	 if (strcmp(argv[1], probe_cases[i].id) == 0)
-	    only = &probe_cases[i];
-      }
-
-      if (only == NULL)
-      {
-	 printf("Unknown case '%s'. Available probes:", argv[1]);
-
-	 for (i = 0; i < PROBE_COUNT; i ++)
-	    printf(" %s", probe_cases[i].id);
-
-	 printf("\n");
-	 set_video_mode(saved_mode);
-	 return 2;
-      }
-
-      run_case(only);
-   }
-   else
-   {
-      for (i = 0; i < GREEN_COUNT; i ++)
-	 run_case(&green_cases[i]);
-   }
+   for (i = 0; i < GREEN_COUNT; i ++)
+      run_case(&green_cases[i]);
 
    result = test_summary();
    set_video_mode(saved_mode);
