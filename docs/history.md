@@ -51,12 +51,34 @@ same **v2.0m** image.
 ## Unreleased development: 2.1
 
 After the deterministic test suites were completed, `main` was
-designated the unreleased **2.1** development line in preparation
-for fixing the defects those tests exposed. The program banner on
-`main` now reads `v2.1` (or `v2.1m` with `VERSION_M`, as this tree
-builds). There is no `modicom-v2.1` branch and no `v2.1.0` tag or
-release yet; 2.1 will be tagged only if and when it is released.
-The historic 2.0 series above is unchanged.
+designated the unreleased **2.1** development line. The program
+banner on `main` reads `v2.1` (or `v2.1m` with `VERSION_M`, as
+this tree builds). There is no `modicom-v2.1` branch and no
+`v2.1.0` tag or release yet; 2.1 will be tagged only if and when
+it is released. The historic 2.0 series above is unchanged.
+
+The defects those suites exposed have been fixed on `main`. In
+brief:
+
+- **Load and edit buffer.** Empty files no longer crash when the
+  byte before the buffer happens to be Ctrl+Z. Delete at the very
+  end of the file no longer corrupts editor state. Full and
+  oversized loads, and inserts into a nearly full buffer, reserve a
+  terminator byte (`malloc(MAXBYTES + 1)`) so the NUL is not written
+  past the allocation; large reads use unsigned chunked I/O so
+  counts above 32767 work on 16-bit Borland.
+- **Find.** The search string buffer is sized for a terminator.
+  Cancelling Find (Escape) no longer overwrites or clears the
+  previous search; Find prompts into a scratch buffer and copies
+  back only on acceptance.
+- **Display.** `showline` at column 79 no longer sweeps video RAM.
+  `showpage` stops at the bottom visible row instead of writing past
+  the 4000-byte colour page. The `+` truncation marker appears only
+  when characters are still hidden; an exactly fitting line and an
+  empty line at column 79 use the normal end-of-line marker.
+
+Each fix was covered by promoting the failing probe into its suite's
+green run. All green suites report 0 failures on the current tree.
 
 ## Development note: `SHOWPAGE.C`
 
