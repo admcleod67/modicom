@@ -9,8 +9,7 @@
 #include "status.h"
 #include "strings.h"
 #include "video.h"
-
-int prompt(char *msg, char *str);
+#include "search.h"
 
 
 void textwrite(char *fname)

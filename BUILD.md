@@ -118,6 +118,7 @@ references:
 - `src/NAVIGATE.C` / `src/NAVIGATE.H`
 - `src/EDIT.C` / `src/EDIT.H`
 - `src/FILEIO.C` / `src/FILEIO.H`
+- `src/SEARCH.C` / `src/SEARCH.H`
 - `src/STRINGS.C` / `src/STRINGS.H`
 - `src/KEYBOARD.C` / `src/KEYBOARD.H`
 - `src/VIDEO.ASM` / `src/VIDEO.H` (assembled with TASM)
@@ -126,7 +127,7 @@ Object files and the executable are written to `build\` (for example
 `build\MODICOM.EXE`).
 
 The project on `main` is configured with include paths
-`C:\BORLANDC\INCLUDE;SRC` and library path `C:\BORLANDC\LIB`. Adjust
+`SRC;C:\BORLANDC\INCLUDE` and library path `C:\BORLANDC\LIB`. Adjust
 these in the IDE if your Borland C++ 3.1 installation lives elsewhere.
 
 The compiler binary directory also needed to be on `PATH` so the IDE
