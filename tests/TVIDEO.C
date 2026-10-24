@@ -514,11 +514,10 @@ static void case_showpage_empty(void)
 }
 
 
-/* Boundary probes */
-
-static void probe_clear_past_page(void)
+static void case_showpage_clear_stops(void)
 {
    char expected[COLS + 1];
+   int row;
 
    screen_fill_sentinel();
    set_cursor(0, 0);
@@ -527,14 +526,18 @@ static void probe_clear_past_page(void)
 
    row_rendered(expected, 0, "one", '<');
    check_row(0, expected);
+   row_cleared(expected);
+   for (row = 1; row < ROWS; row ++)
+      check_row(row, expected);
    check_beyond_page();
 }
 
 
-static void probe_lines_past_page(void)
+static void case_showpage_more_lines(void)
 {
    static char doc[256];
-   int i, pos;
+   char expected[COLS + 1];
+   int i, pos, row;
 
    pos = 0;
    for (i = 0; i < 30; i ++)
@@ -550,17 +553,25 @@ static void probe_lines_past_page(void)
    showpage(doc, doc + pos);
    snapshot_screen();
 
+   row_rendered(expected, 0, "x", '<');
+   for (row = 0; row < ROWS; row ++)
+      check_row(row, expected);
    check_beyond_page();
 }
 
 
-static void probe_page_last_row(void)
+static void case_showpage_last_row(void)
 {
+   char expected[COLS + 1];
+
    screen_fill_sentinel();
    set_cursor(24, 0);
    showpage(doc_two, doc_two + 8);
    snapshot_screen();
 
+   check_rows_sentinel(0, 23);
+   row_rendered(expected, 0, "one", '<');
+   check_row(24, expected);
    check_beyond_page();
 }
 
@@ -622,14 +633,14 @@ static struct testcase green_cases[] =
    { "P3", "showpage at column offset", case_showpage_offset },
    { "P4", "showpage soft carriage return", case_showpage_soft },
    { "P5", "showpage with overlong line", case_showpage_long },
-   { "P6", "showpage empty buffer", case_showpage_empty }
+   { "P6", "showpage empty buffer", case_showpage_empty },
+   { "P7", "showpage clear stops at page end", case_showpage_clear_stops },
+   { "P8", "showpage more lines than rows", case_showpage_more_lines },
+   { "P9", "showpage starting on last row", case_showpage_last_row }
 };
 
 static struct testcase probe_cases[] =
 {
-   { "D1", "showpage clearing past visible page", probe_clear_past_page },
-   { "D2", "showpage more lines than rows", probe_lines_past_page },
-   { "D3", "showpage starting on last row", probe_page_last_row },
    { "D5", "showline exactly-fitting line marker", probe_exact_fit }
 };
 

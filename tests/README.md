@@ -235,7 +235,7 @@ With no command-line argument, `TVIDEO` runs the green cases:
 | Prefix | Group |
 |--------|-------|
 | `S` | `showline`: end markers, CR and soft-CR, overlong lines, offsets, column 79 |
-| `P` | `showpage`: multi-line pages, offsets, clearing, empty buffer |
+| `P` | `showpage`: multi-line pages, offsets, clearing, empty buffer, bottom-row bounds (`P7`–`P9`) |
 
 A single boundary probe can be run by passing its identifier, for
 example `BUILD\TESTS\TVIDEO D5`. As with the other suites, a
@@ -243,9 +243,6 @@ failing probe is a reproducible finding to be fixed separately.
 
 | ID | Probe |
 |----|-------|
-| D1 | `showpage` end-of-buffer clearing past the visible page |
-| D2 | `showpage` with more lines than screen rows |
-| D3 | `showpage` starting on the last screen row |
 | D5 | Exactly-fitting line marked as overlong |
 
 ## Manual Smoke Test

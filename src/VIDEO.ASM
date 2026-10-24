@@ -174,21 +174,21 @@ PROC	ScPokePage
 	sub	cl, dl                  ; Subtract column offset
 @@10:
 	call	ScPokeLine              ; Display current line
+	cmp	dh, 24                  ; Bottom row already drawn?
+	jae	@@30                    ; Done (do not draw/clear below)
 	cmp	si, bx                  ; End of buffer?
-	ja	@@20                    ; If so, jump
-	cmp	dh, 25                  ; Bottom of screen?
-	je	@@30                    ; If so, jump
+	ja	@@20                    ; If so, clear the rest
 	inc	dh                      ; Otherwise, move to
 	mov	cx, 79                  ; Set maximum line length
 	jmp	@@10                    ; next line and repeat
 @@20:
+	cmp	dh, 24                  ; Cleared through bottom row?
+	jae	@@30                    ; If so, done
+	inc	dh                      ; Next row to clear (di already there)
 	mov	cx, 80                  ; Set cx to line length
 	mov	al, 32                  ; Set al to space
-	rep stosw			; Clear to eol
-	cmp	dh, 25                  ; Bottom of screen?
-	je	@@30                    ; If so, jump
-	inc	dh                      ; Otherwise, move to
-	jmp	@@20                    ; next line and repeat
+	rep stosw			; Clear that row
+	jmp	@@20
 @@30:
 	ret
 
