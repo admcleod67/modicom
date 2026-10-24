@@ -2,29 +2,10 @@
 #include <string.h>
 #include "editor.h"
 #include "search.h"
+#include "prompt.h"
 #include "status.h"
-#include "keyboard.h"
-#include "strings.h"
 #include "video.h"
 
-
-int prompt(char *msg, char *str)
-{
-   int len;
-   unsigned key;
-
-   window(1, 1, 80, 1);
-   clreol();
-   cputs(msg);
-
-   len = strlen(msg) + 1;
-   key = getline(str, len, 1, 80 - len);
-
-   if (key != K_ESC)
-      rtrim(str);
-
-   return *str && (key != K_ESC);
-}
 
 int findprompt(char *srchstr)
 {

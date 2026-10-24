@@ -9,7 +9,7 @@
 #include "status.h"
 #include "strings.h"
 #include "video.h"
-#include "search.h"
+#include "prompt.h"
 
 
 void textwrite(char *fname)
