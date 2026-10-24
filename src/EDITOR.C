@@ -20,8 +20,37 @@ int x, y, lineno, lcount, changed, insert, maxrow, toobig;
 extern void showline(char *str, char *end);
 extern void showpage(char *str, char *end);
 
+void helpscreen(void);
+void showstatus(void);
+void showpos(void);
+void scoreboard(void);
+void helptoggle(void);
+void lineup(void);
+int  linedown(void);
+void cursup(void);
+void cursdown(void);
+void cursleft(void);
+void cursright(void);
+void pageup(void);
+void pagedown(void);
+void scrollup(void);
+void del(void);
+void addline(void);
+int  abortedit(void);
+void backspace(void);
+void delchar(void);
+void delword(void);
+void nextword(void);
+void lastword(void);
+void gotoeol(void);
+void gotobol(void);
+void tabulate(void);
+void readfile(void);
+void writefile(void);
+int  prompt(char *msg, char *str);
 
-void helpscreen()
+
+void helpscreen(void)
 {
    window(1, 2, 80, 8);
    clrscr();
@@ -74,7 +103,7 @@ void statmsg(int status)
 }
 
 
-void showstatus()
+void showstatus(void)
 {
    static int status = 0;
    int modifiers;
@@ -89,7 +118,7 @@ void showstatus()
 }
 
 
-void showpos()
+void showpos(void)
 {
    window(1, 1, 80, 1);
    gotoxy(59, 1);
@@ -100,7 +129,7 @@ void showpos()
 }
 
 
-void scoreboard()
+void scoreboard(void)
 {
    char name[34];
 
@@ -122,7 +151,7 @@ void scoreboard()
 }
 
 
-void helptoggle()
+void helptoggle(void)
 {
    char *str;
 
@@ -148,7 +177,7 @@ void msg(char *str)
 }
 
 
-void lineup()
+void lineup(void)
 {
    while (*(-- ptr));
 
@@ -172,7 +201,7 @@ void lineup()
 }
 
 
-int linedown()
+int linedown(void)
 {
    while (*(ptr ++));
 
@@ -202,7 +231,7 @@ void gotocol(int col)
 }
 
 
-void cursup()
+void cursup(void)
 {
    if (lineno > 1)
    {
@@ -212,7 +241,7 @@ void cursup()
 }
 
 
-void cursdown()
+void cursdown(void)
 {
    if (lineno < lcount)
    {
@@ -222,7 +251,7 @@ void cursdown()
 }
 
 
-void cursleft()
+void cursleft(void)
 {
    if (ptr != start)
    {
@@ -240,7 +269,7 @@ void cursleft()
 }
 
 
-void cursright()
+void cursright(void)
 {
    if ((ptr != end) && (x < 80))
    {
@@ -274,7 +303,7 @@ int gotorow(int row)
 }
 
 
-void pageup()
+void pageup(void)
 {
    int i;
 
@@ -306,7 +335,7 @@ void pageup()
 }
 
 
-void pagedown()
+void pagedown(void)
 {
    int i;
 
@@ -361,7 +390,7 @@ void inschar(int ch)
 }
 
 
-void scrollup()
+void scrollup(void)
 {
    char *str;
    int line, i;
@@ -388,7 +417,7 @@ void scrollup()
 }
 
 
-void del()
+void del(void)
 {
    char *str;
    int len;
@@ -473,7 +502,7 @@ void newline(int insert)
 }
 
 
-void addline()
+void addline(void)
 {
    if ((end + 1) < (start + MAXBYTES))
    {
@@ -523,7 +552,7 @@ void textwrite(char *fname)
 }
 
 
-int abortedit()
+int abortedit(void)
 {
    int key;
 
@@ -548,7 +577,7 @@ int abortedit()
 }
 
 
-void backspace()
+void backspace(void)
 {
    int offset;
    char *str;
@@ -600,7 +629,7 @@ void backspace()
 }
 
 
-void delchar()
+void delchar(void)
 {
    int len;
 
@@ -637,7 +666,7 @@ void delchar()
 }
 
 
-void delword()
+void delword(void)
 {
    BYTE *str;
    int line, i;
@@ -673,7 +702,7 @@ void delword()
 }
 
 
-void nextword()
+void nextword(void)
 {
    if (iseol(*ptr))
    {
@@ -701,7 +730,7 @@ void nextword()
 }
 
 
-void lastword()
+void lastword(void)
 {
    while (ptr > start)
    {
@@ -727,7 +756,7 @@ void lastword()
 }
 
 
-void gotoeol()
+void gotoeol(void)
 {
    while (!iseol(*ptr) && x < 80)
    {
@@ -737,7 +766,7 @@ void gotoeol()
 }
 
 
-void gotobol()
+void gotobol(void)
 {
    while (*(ptr -1))
    {
@@ -749,7 +778,7 @@ void gotobol()
 }
 
 
-void tabulate()
+void tabulate(void)
 {
    int offset, len;
 
@@ -872,7 +901,7 @@ void loadfile(char *fname)
 }
 
 
-void readfile()
+void readfile(void)
 {
    int nlines;
    unsigned bytes;
@@ -905,7 +934,7 @@ void readfile()
 }
 
 
-void writefile()
+void writefile(void)
 {
    char fname[MAXPATH];
 
@@ -1030,7 +1059,7 @@ int find(char *srchstr)
 }
 
 
-void ctrlkey(char *name)
+void ctrlkey(void)
 {
    static char srchstr[MAXSEARCH + 1] = "\0";
    unsigned key;
@@ -1066,7 +1095,7 @@ void ctrlkey(char *name)
       case 'r':
 
       case K_CTRL_R:
-	 readfile(name);
+	 readfile();
 	 break;
 
       case 'W':
@@ -1074,7 +1103,7 @@ void ctrlkey(char *name)
       case 'w':
 
       case K_CTRL_W:
-	 writefile(name);
+	 writefile();
    }
 }
 
@@ -1169,7 +1198,7 @@ int textedit(char *name)
 	    break;
 
 	 case K_CTRL_K:
-	    ctrlkey(fname);
+	    ctrlkey();
 	    break;
 
 	 case K_CTRL_Y:
@@ -1209,11 +1238,11 @@ int textedit(char *name)
 	    break;
 
 	 case K_ESC:
-	    stop = abortedit(fname);
+	    stop = abortedit();
 	    break;
 
 	 case K_F1:
-	    helptoggle(fname);
+	    helptoggle();
 	    break;
 
 	 default:
