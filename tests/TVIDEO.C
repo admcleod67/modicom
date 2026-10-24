@@ -17,6 +17,7 @@
 #include <dos.h>
 
 #include "TEST.H"
+#include "video.h"
 
 #define VIDEO_SEG   0xB800
 #define PAGE_BYTES  4000
@@ -26,12 +27,6 @@
 #define SENT_CHAR   '?'
 #define SENT_ATTR   0x1F
 #define WRITE_ATTR  0x07
-
-
-/* Functions under test (defined in VIDEO.ASM) */
-
-void showline(char *str, char *endptr);
-void showpage(char *str, char *endptr);
 
 
 /* Screen fixture */

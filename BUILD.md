@@ -116,7 +116,7 @@ references:
 - `src/EDITOR.C` / `src/EDITOR.H`
 - `src/STRINGS.C` / `src/STRINGS.H`
 - `src/KEYBOARD.C` / `src/KEYBOARD.H`
-- `src/VIDEO.ASM` (assembled with TASM)
+- `src/VIDEO.ASM` / `src/VIDEO.H` (assembled with TASM)
 
 Object files and the executable are written to `build\` (for example
 `build\MODICOM.EXE`).

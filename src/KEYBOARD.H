@@ -1,3 +1,6 @@
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
+
 /* Cursor & keypad key codes */
 
 #define	K_UP	0x4800
@@ -61,3 +64,5 @@
 
 unsigned getkey(void);
 unsigned getline(char *str, int x, int y, int maxlen);
+
+#endif

@@ -14,6 +14,7 @@
 #include "TEST.H"
 #include "editor.h"
 #include "strings.h"
+#include "video.h"
 
 #define GUARD_SIZE 16
 #define GUARD_BYTE 0xA5

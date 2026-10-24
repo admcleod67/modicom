@@ -12,13 +12,11 @@
 #include "editor.h"
 #include "keyboard.h"
 #include "strings.h"
+#include "video.h"
 
 
 BYTE *start, *ptr, *end, fname[MAXPATH];
 int x, y, lineno, lcount, changed, insert, maxrow, toobig;
-
-extern void showline(char *str, char *end);
-extern void showpage(char *str, char *end);
 
 void helpscreen(void);
 void showstatus(void);

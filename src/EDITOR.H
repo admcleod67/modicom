@@ -1,3 +1,6 @@
+#ifndef EDITOR_H
+#define EDITOR_H
+
 /* Editor definitions */
 
 #define MAXSEARCH	73
@@ -17,3 +20,5 @@
 /* Editor function prototype */
 
 int textedit(char *name);
+
+#endif
