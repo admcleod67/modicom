@@ -565,14 +565,19 @@ static void probe_page_last_row(void)
 }
 
 
-static void probe_showline_col79(void)
+static void case_showline_col79(void)
 {
+   char expected[COLS + 1];
+
    screen_fill_sentinel();
    set_cursor(5, 79);
    showline(doc_mid, doc_mid + 7);
    snapshot_screen();
 
-   /* The write should stay within the starting row. */
+   /* Zero budget: only the marker cell at column 79 is written. */
+   row_sentinel(expected);
+   expected[79] = '+';
+   check_row(5, expected);
    check_rows_sentinel(6, 24);
    check_beyond_page();
 }
@@ -611,6 +616,7 @@ static struct testcase green_cases[] =
    { "S6", "showline overlong line", case_showline_long },
    { "S7", "showline at column offset", case_showline_offset },
    { "S8", "showline on last row", case_showline_lastrow },
+   { "S9", "showline starting in column 79", case_showline_col79 },
    { "P1", "showpage three lines", case_showpage_three },
    { "P2", "showpage from middle row", case_showpage_mid },
    { "P3", "showpage at column offset", case_showpage_offset },
@@ -624,7 +630,6 @@ static struct testcase probe_cases[] =
    { "D1", "showpage clearing past visible page", probe_clear_past_page },
    { "D2", "showpage more lines than rows", probe_lines_past_page },
    { "D3", "showpage starting on last row", probe_page_last_row },
-   { "D4", "showline starting in column 79", probe_showline_col79 },
    { "D5", "showline exactly-fitting line marker", probe_exact_fit }
 };
 

@@ -110,6 +110,7 @@ PROC    ScPokeLine
 
 	mov     ah, 07h			; Assign attribute to ah
 	cld
+	jcxz	@@25			; No room for characters: marker only
 @@10:
 	lodsb                           ; Get next character
 	or	al, al                  ; NULL terminator?
@@ -123,6 +124,7 @@ PROC    ScPokeLine
 	je	@@40
 	stosw                           ; Otherwise display it
 	loop	@@10                    ; Until max line length
+@@25:
 	mov	al, '+'                 ; Set al to long line
 	stosw                           ; marker & display it
 	mov	cx, 0ffffh              ; Set max search length
