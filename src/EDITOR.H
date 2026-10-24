@@ -17,6 +17,11 @@
 #define	VERSION_M
 
 
+#include <dir.h>   /* MAXPATH for fname[] */
+
+extern BYTE *start, *ptr, *end, fname[MAXPATH];
+extern int x, y, lineno, lcount, changed, insert, maxrow, toobig;
+
 /* Editor function prototype */
 
 int textedit(char *name);

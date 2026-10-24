@@ -114,6 +114,7 @@ references:
 
 - `src/MODICOM.C`
 - `src/EDITOR.C` / `src/EDITOR.H`
+- `src/STATUS.C` / `src/STATUS.H`
 - `src/STRINGS.C` / `src/STRINGS.H`
 - `src/KEYBOARD.C` / `src/KEYBOARD.H`
 - `src/VIDEO.ASM` / `src/VIDEO.H` (assembled with TASM)
