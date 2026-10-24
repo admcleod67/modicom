@@ -3,6 +3,7 @@
 #include <dir.h>
 #include <conio.h>
 #include <ctype.h>
+#include <bios.h>
 #include <alloc.h>
 #include <fcntl.h>
 #include <process.h>

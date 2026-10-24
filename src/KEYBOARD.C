@@ -1,4 +1,6 @@
 #include <bios.h>
+#include <conio.h>
+#include <ctype.h>
 #include "keyboard.h"
 
 
