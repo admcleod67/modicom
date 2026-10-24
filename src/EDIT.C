@@ -4,9 +4,7 @@
 #include <string.h>
 #include "editor.h"
 #include "edit.h"
-#include "status.h"
 #include "navigate.h"
-#include "keyboard.h"
 #include "strings.h"
 #include "video.h"
 
@@ -150,30 +148,6 @@ void addline(void)
 
       changed = TRUE;
    }
-}
-
-int abortedit(void)
-{
-   int key;
-
-   if (changed)
-   {
-      window(1, 1, 40, 1);
-      cputs("Abort editing? (Y/N) ");
-      clreol();
-
-      key = 0;
-      while (!key)
-	 key = getkey();
-
-      if ((key == 'n') || (key == 'N'))
-      {
-	 scoreboard();
-	 return FALSE;
-      }
-   }
-
-   return TRUE;
 }
 
 void backspace(void)

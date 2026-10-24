@@ -5,7 +5,6 @@ void inschar(int ch);
 void del(void);
 void newline(int insert);
 void addline(void);
-int  abortedit(void);
 void backspace(void);
 void delchar(void);
 void delword(void);
