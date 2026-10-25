@@ -14,8 +14,10 @@ The automated tests currently cover:
   carriage return (`0x8d`) line endings;
 - editor file loading and saving in `src/FILEIO.C` (`TEDITIO.EXE`),
   described below;
-- individual cursor and editing operations in `src/NAVIGATE.C`
-  and `src/EDIT.C` (`TEDITOPS.EXE`), also described below;
+- cursor and paging operations in `src/NAVIGATE.C`
+  (`TEDITNAV.EXE`), also described below;
+- editing operations in `src/EDIT.C` (`TEDITEDT.EXE`), also
+  described below;
 - keyboard input in `src/KEYBOARD.C`, `prompt` in `src/PROMPT.C`,
   and `findprompt` in `src/SEARCH.C` (`TEDITIN.EXE`), also
   described below;
@@ -38,7 +40,8 @@ directory on `PATH`, run:
 MAKE -f TESTS\TESTS.MAK rebuild
 BUILD\TESTS\TSTRINGS
 BUILD\TESTS\TEDITIO
-BUILD\TESTS\TEDITOPS
+BUILD\TESTS\TEDITNAV
+BUILD\TESTS\TEDITEDT
 BUILD\TESTS\TEDITIN
 BUILD\TESTS\TVIDEO
 ```
@@ -116,16 +119,16 @@ The nonexistent-file and read/write-error paths are not covered:
 on error the editor displays a message and waits for a keypress,
 which would hang an unattended test.
 
-## Editor Operation Tests (`TEDITOPS.EXE`)
+## Editor Navigate Tests (`TEDITNAV.EXE`)
 
-`TEDITOPS.EXE` uses the same Core-plus-modules link-with-stubs
+`TEDITNAV.EXE` uses the same Core-plus-modules link-with-stubs
 design and guard-banded buffer as `TEDITIO.EXE`, but instead of
 loading files it installs small documents directly in the editor's
 internal format (lines separated by carriage return and NUL, as
 produced by `loadfile` from a CRLF file), places the cursor by
-setting the editor globals, and calls individual Navigate and Edit
-functions such as `cursdown`, `inschar`, and `del`. After each
-operation it asserts the exact buffer contents, the cursor
+setting the editor globals, and calls individual Navigate
+functions such as `cursdown`, `nextword`, and `pagedown`. After
+each operation it asserts the exact buffer contents, the cursor
 position, the line number and count, and the guard bytes.
 
 These tests verify buffer and cursor state only. The display
@@ -133,26 +136,45 @@ routines are stubbed here; their cell output is covered by
 `TVIDEO.EXE` below, and interactive appearance by the manual
 smoke test.
 
-With no command-line argument, `TEDITOPS` runs the green cases:
+With no command-line argument, `TEDITNAV` runs the green cases:
 
 | Prefix | Group |
 |--------|-------|
 | `N` | Cursor navigation: character, line, word, and column movement |
-| `E` | Editing: insert (including near-full buffer), overwrite, newline, delete (including at buffer end), backspace, tab |
 | `V` | Paging: `pageup` and `pagedown` on a six-line document |
 
 A single boundary probe can be run by passing its identifier, for
-example `BUILD\TESTS\TEDITOPS X3`. As with the IO probes, a
+example `BUILD\TESTS\TEDITNAV X1`. As with the IO probes, a
 failing probe is a reproducible finding to be fixed separately.
 
 | ID | Probe |
 |----|-------|
 | X1 | Beginning of line on the first line |
 | X2 | Last word at the start of the buffer |
+
+## Editor Edit Tests (`TEDITEDT.EXE`)
+
+`TEDITEDT.EXE` uses the same harness design as `TEDITNAV.EXE`,
+calling Edit functions such as `inschar`, `del`, and `delword`
+against installed documents and asserting buffer, cursor, and
+guard state after each operation.
+
+With no command-line argument, `TEDITEDT` runs the green cases:
+
+| Prefix | Group |
+|--------|-------|
+| `E` | Editing: insert (including near-full buffer), overwrite, newline, delete (including at buffer end), backspace, tab |
+
+A single boundary probe can be run by passing its identifier, for
+example `BUILD\TESTS\TEDITEDT X3`. As with the other probes, a
+failing probe is a reproducible finding to be fixed separately.
+
+| ID | Probe |
+|----|-------|
 | X3 | Delete word at the final line ending |
 
 Interactive dispatch (`ctrlkey`, Core `abortedit`, and the `textedit`
-loop itself) is not covered by this suite; keyboard input to
+loop itself) is not covered by these suites; keyboard input to
 `prompt` and `getline` is covered by `TEDITIN.EXE`, below.
 
 ## Editor Input Tests (`TEDITIN.EXE`)
