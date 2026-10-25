@@ -1,10 +1,11 @@
 /* Editor input tests for ModiCom.
  *
- * Links the production EDITOR.OBJ and KEYBOARD.OBJ and feeds
- * scripted keystrokes through the real BIOS keyboard buffer into
- * getline (KEYBOARD.C) and prompt (EDITOR.C). The test cannot stub
- * getkey: KEYBOARD.OBJ already defines it, so a second definition
- * would fail the link.
+ * Links Core, Keyboard, Prompt, and Search (plus the other editor
+ * modules) and feeds scripted keystrokes through the real BIOS
+ * keyboard buffer into getline (KEYBOARD.C), prompt (PROMPT.C),
+ * and findprompt (SEARCH.C). The test cannot stub getkey:
+ * KEYBOARD.OBJ already defines it, so a second definition would
+ * fail the link.
  *
  * With no command-line argument, runs the safe (green) cases. With
  * a case identifier argument, runs only that boundary probe, so a
@@ -21,6 +22,8 @@
 #include "TEST.H"
 #include "editor.h"
 #include "keyboard.h"
+#include "prompt.h"
+#include "search.h"
 #include "strings.h"
 #include "video.h"
 
@@ -40,13 +43,6 @@
 #define KEY_RETURN ((unsigned) K_RETURN)
 #define KEY_ESC    ((unsigned) K_ESC)
 #define KEY_BS     ((unsigned) K_BS)
-
-
-/* Functions under test (defined in EDITOR.C / KEYBOARD.C) */
-
-int prompt(char *msg, char *str);
-int findprompt(char *srchstr);
-/* getline and getkey come from keyboard.h */
 
 
 /* Display stubs: VIDEO.OBJ is deliberately not linked */

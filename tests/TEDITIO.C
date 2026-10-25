@@ -1,10 +1,11 @@
 /* Editor file IO tests for ModiCom.
  *
- * Links the production EDITOR.OBJ with stubbed display routines and
- * a guard-banded edit buffer. With no command-line argument, runs
- * the safe (green) cases. With a case identifier argument, runs only
- * that boundary probe, so a hang or memory corruption in one probe
- * cannot hide the results of the others.
+ * Links Core and File I/O (plus the other editor modules) with
+ * stubbed display routines and a guard-banded edit buffer. With
+ * no command-line argument, runs the safe (green) cases. With a
+ * case identifier argument, runs only that boundary probe, so a
+ * hang or memory corruption in one probe cannot hide the results
+ * of the others.
  */
 
 #include <stdio.h>
@@ -13,6 +14,7 @@
 
 #include "TEST.H"
 #include "editor.h"
+#include "fileio.h"
 #include "strings.h"
 #include "video.h"
 
@@ -21,15 +23,6 @@
 
 #define IN_PATH  "BUILD\\TESTS\\IN01.TXT"
 #define OUT_PATH "BUILD\\TESTS\\OUT01.TXT"
-
-
-/* Editor globals and entry points under test (defined in EDITOR.C) */
-
-extern BYTE *start, *ptr, *end;
-extern int x, y, lineno, lcount, changed, insert, maxrow, toobig;
-
-void loadfile(char *fname);
-void textwrite(char *fname);
 
 
 /* Display stubs: VIDEO.OBJ is deliberately not linked */

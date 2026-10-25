@@ -12,12 +12,13 @@ The automated tests currently cover:
 - the string routines in `src/STRINGS.C` (`TSTRINGS.EXE`):
   `replace`, `rtrim`, and `linelen`, including CR and xBase soft
   carriage return (`0x8d`) line endings;
-- editor file loading and saving in `src/EDITOR.C` (`TEDITIO.EXE`),
+- editor file loading and saving in `src/FILEIO.C` (`TEDITIO.EXE`),
   described below;
-- individual editor cursor and editing operations in
-  `src/EDITOR.C` (`TEDITOPS.EXE`), also described below;
-- keyboard input in `src/KEYBOARD.C` and `src/EDITOR.C`
-  (`TEDITIN.EXE`), also described below;
+- individual cursor and editing operations in `src/NAVIGATE.C`
+  and `src/EDIT.C` (`TEDITOPS.EXE`), also described below;
+- keyboard input in `src/KEYBOARD.C`, `prompt` in `src/PROMPT.C`,
+  and `findprompt` in `src/SEARCH.C` (`TEDITIN.EXE`), also
+  described below;
 - video display routines in `src/VIDEO.ASM` (`TVIDEO.EXE`), also
   described below.
 
@@ -65,8 +66,9 @@ rule.
 
 ## Editor IO Tests (`TEDITIO.EXE`)
 
-`TEDITIO.EXE` links the production `EDITOR.OBJ` together with
-`KEYBOARD.OBJ` and `STRINGS.OBJ`, but deliberately not
+`TEDITIO.EXE` exercises File I/O (`loadfile` / `textwrite` in
+`src/FILEIO.C`). It links Core plus Status, Navigate, Edit, File
+I/O, Search, Prompt, Keyboard, and Strings, but deliberately not
 `VIDEO.OBJ`. Instead, the test file provides no-op `showline` and
 `showpage` stubs, so the file loading and saving code can run
 without the assembler display routines.
@@ -116,12 +118,12 @@ which would hang an unattended test.
 
 ## Editor Operation Tests (`TEDITOPS.EXE`)
 
-`TEDITOPS.EXE` uses the same link-with-stubs design and
-guard-banded buffer as `TEDITIO.EXE`, but instead of loading
-files it installs small documents directly in the editor's
+`TEDITOPS.EXE` uses the same Core-plus-modules link-with-stubs
+design and guard-banded buffer as `TEDITIO.EXE`, but instead of
+loading files it installs small documents directly in the editor's
 internal format (lines separated by carriage return and NUL, as
 produced by `loadfile` from a CRLF file), places the cursor by
-setting the editor globals, and calls individual operation
+setting the editor globals, and calls individual Navigate and Edit
 functions such as `cursdown`, `inschar`, and `del`. After each
 operation it asserts the exact buffer contents, the cursor
 position, the line number and count, and the guard bytes.
@@ -155,9 +157,10 @@ loop itself) is not covered by this suite; keyboard input to
 
 ## Editor Input Tests (`TEDITIN.EXE`)
 
-`TEDITIN.EXE` links `EDITOR.OBJ`, `KEYBOARD.OBJ`, and
-`STRINGS.OBJ` and tests `getline` in `src/KEYBOARD.C` together
-with its production caller `prompt` in `src/PROMPT.C`.
+`TEDITIN.EXE` links the same Core-plus-modules set as the other
+editor harnesses (plus Keyboard and Strings; no Video) and tests
+`getline` in `src/KEYBOARD.C` together with `prompt` in
+`src/PROMPT.C` and `findprompt` in `src/SEARCH.C`.
 
 The test cannot stub `getkey`: `KEYBOARD.OBJ` already defines it,
 so a second definition would fail the link. Instead, keystrokes
@@ -270,8 +273,7 @@ The following are intentionally not covered yet:
   investigation of the historically reported infrequent crash;
 - the nonexistent-file and read/write-error paths (see above);
 - the non-`VERSION_M` save variant;
-- Borland compiler warning cleanup;
-- restructuring `EDITOR.C`.
+- Borland compiler warning cleanup.
 
 Those items should be introduced separately, after this baseline,
 so that any failure can be attributed to a specific new test or

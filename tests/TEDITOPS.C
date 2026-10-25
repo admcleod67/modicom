@@ -1,11 +1,12 @@
 /* Editor operation tests for ModiCom.
  *
- * Links the production EDITOR.OBJ with stubbed display routines
- * and calls individual cursor and editing functions directly
- * against a guard-banded edit buffer. With no command-line
- * argument, runs the safe (green) cases. With a case identifier
- * argument, runs only that boundary probe, so a hang or memory
- * corruption in one probe cannot hide the results of the others.
+ * Links Core, Navigate, and Edit (plus the other editor modules)
+ * with stubbed display routines and calls individual cursor and
+ * editing functions directly against a guard-banded edit buffer.
+ * With no command-line argument, runs the safe (green) cases.
+ * With a case identifier argument, runs only that boundary probe,
+ * so a hang or memory corruption in one probe cannot hide the
+ * results of the others.
  *
  * Documents use the editor's internal loaded format: lines
  * separated by carriage return and NUL, as produced by loadfile
@@ -18,40 +19,13 @@
 
 #include "TEST.H"
 #include "editor.h"
+#include "navigate.h"
+#include "edit.h"
 #include "strings.h"
 #include "video.h"
 
 #define GUARD_SIZE 16
 #define GUARD_BYTE 0xA5
-
-
-/* Editor globals (defined in EDITOR.C) */
-
-extern BYTE *start, *ptr, *end;
-extern int x, y, lineno, lcount, changed, insert, maxrow, toobig;
-
-
-/* Editor operations under test (defined in EDITOR.C) */
-
-void cursup(void);
-void cursdown(void);
-void cursleft(void);
-void cursright(void);
-int gotorow(int row);
-void pageup(void);
-void pagedown(void);
-void inschar(int ch);
-void newline(int insert);
-void addline(void);
-void backspace(void);
-void delchar(void);
-void del(void);
-void delword(void);
-void nextword(void);
-void lastword(void);
-void gotoeol(void);
-void gotobol(void);
-void tabulate(void);
 
 
 /* Display stubs: VIDEO.OBJ is deliberately not linked */
