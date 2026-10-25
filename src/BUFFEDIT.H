@@ -1,5 +1,5 @@
-#ifndef EDIT_H
-#define EDIT_H
+#ifndef BUFFEDIT_H
+#define BUFFEDIT_H
 
 void inschar(int ch);
 void del(void);

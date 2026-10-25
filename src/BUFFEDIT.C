@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "editor.h"
-#include "edit.h"
+#include "buffedit.h"
 #include "navigate.h"
 #include "strings.h"
 #include "video.h"

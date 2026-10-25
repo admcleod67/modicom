@@ -19,7 +19,7 @@
 #include "TEST.H"
 #include "THARNESS.H"
 #include "editor.h"
-#include "edit.h"
+#include "buffedit.h"
 #include "strings.h"
 #include "video.h"
 

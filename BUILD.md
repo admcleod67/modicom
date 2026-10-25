@@ -44,9 +44,9 @@ honours whatever is in that header.
 | Banner | ModiCom … Editor v2.1 | ModiCom … Editor v2.1m |
 | On save | Appends a DOS Ctrl+Z (`0x1A`) EOF byte | Writes buffer only — no Ctrl+Z |
 
-The save-path logic is in `src/EDITOR.C`. This tree ships with
-`VERSION_M` defined, so a straight rebuild produces the **2.1m**
-variant.
+The save-path logic is in `src/FILEIO.C` (session Core is
+`src/TEXTEDIT.C`). This tree ships with `VERSION_M` defined, so a
+straight rebuild produces the **2.1m** variant.
 
 ## Original toolset
 
@@ -113,10 +113,10 @@ Borland C++ 3.1 IDE and build the project from there. The project
 references:
 
 - `src/MODICOM.C`
-- `src/EDITOR.C` / `src/EDITOR.H`
+- `src/TEXTEDIT.C` / `src/EDITOR.H` (Core session; shared defs)
 - `src/STATUS.C` / `src/STATUS.H`
 - `src/NAVIGATE.C` / `src/NAVIGATE.H`
-- `src/EDIT.C` / `src/EDIT.H`
+- `src/BUFFEDIT.C` / `src/BUFFEDIT.H`
 - `src/FILEIO.C` / `src/FILEIO.H`
 - `src/SEARCH.C` / `src/SEARCH.H`
 - `src/PROMPT.C` / `src/PROMPT.H`

@@ -16,7 +16,7 @@ The automated tests currently cover:
   described below;
 - cursor and paging operations in `src/NAVIGATE.C`
   (`TEDITNAV.EXE`), also described below;
-- editing operations in `src/EDIT.C` (`TEDITEDT.EXE`), also
+- editing operations in `src/BUFFEDIT.C` (`TEDITEDT.EXE`), also
   described below;
 - keyboard input in `src/KEYBOARD.C`, `prompt` in `src/PROMPT.C`,
   and `findprompt` in `src/SEARCH.C` (`TEDITIN.EXE`), also
@@ -162,7 +162,7 @@ failing probe is a reproducible finding to be fixed separately.
 ## Editor Edit Tests (`TEDITEDT.EXE`)
 
 `TEDITEDT.EXE` uses the same Core-plus-modules and `THARNESS`
-design as `TEDITNAV.EXE`, calling Edit functions such as
+design as `TEDITNAV.EXE`, calling Buffedit functions such as
 `inschar`, `del`, and `delword` against installed documents and
 asserting buffer, cursor, and guard state after each operation.
 

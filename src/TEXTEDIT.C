@@ -8,7 +8,7 @@
 #include "video.h"
 #include "status.h"
 #include "navigate.h"
-#include "edit.h"
+#include "buffedit.h"
 #include "fileio.h"
 #include "search.h"
 

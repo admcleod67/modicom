@@ -83,15 +83,18 @@ green run. All green suites report 0 failures on the current tree.
 The former monolithic `EDITOR.C` was then split, without intentional
 behaviour change, into a thin Core (`textedit`, `ctrlkey`, session
 abort) plus Status, Navigate, Edit, File I/O, Search, and Prompt
-modules; Keyboard, Strings, and Video remain as before. The green
-suites were then aligned to those modules: harnesses include the
-matching headers, and the former combined ops suite was split into
-`TEDITNAV` (Navigate) and `TEDITEDT` (Edit). Further test work
-still deferred — case-ID renames and the other items listed under
-Deferred Test Work in `tests/README.md` — remains separate
-follow-on. Closing Status and Core automated coverage is underway;
-see `docs/2.1-coverage.md`. The buffer suites share a common
-`THARNESS` helper for the guarded edit buffer.
+modules; Keyboard, Strings, and Video remain as before. Core was
+later renamed to `TEXTEDIT.C` (matching `textedit`) and the buffer
+mutation module to `BUFFEDIT.C` / `BUFFEDIT.H`, keeping shared
+`EDITOR.H` for constants and globals. The green suites were aligned
+to those modules: harnesses include the matching headers, and the
+former combined ops suite was split into `TEDITNAV` (Navigate) and
+`TEDITEDT` (Buffedit). Further test work still deferred — case-ID
+renames and the other items listed under Deferred Test Work in
+`tests/README.md` — remains separate follow-on. Closing Status and
+Core automated coverage is underway; see `docs/2.1-coverage.md`.
+The buffer suites share a common `THARNESS` helper for the guarded
+edit buffer.
 
 ## Development note: `SHOWPAGE.C`
 
