@@ -85,7 +85,7 @@ behaviour change, into a thin Core (`textedit`, `ctrlkey`, session
 abort) plus Status, Navigate, Edit, File I/O, Search, and Prompt
 modules; Keyboard, Strings, and Video remain as before. Aligning the
 green suites more closely with those module boundaries is follow-on
-work.
+work; see `docs/2.1-test-align.md`.
 
 ## Development note: `SHOWPAGE.C`
 
