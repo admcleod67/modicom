@@ -27,6 +27,12 @@ The automated tests currently cover:
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
 
+`TEDITIO`, `TEDITNAV`, and `TEDITEDT` also link `THARNESS.OBJ`
+(`tests/THARNESS.C` / `THARNESS.H`) for the shared guarded edit
+buffer, document install helpers, and no-op `showline` /
+`showpage` stubs. `TEDITIN` keeps its own destination-buffer
+guards and does not use `THARNESS`.
+
 The tests are not part of the production build. They are not listed
 in the root `MAKEFILE` release objects or in `MODICOM.PRJ`, and no
 test object is linked into `MODICOM.EXE`.
@@ -71,10 +77,11 @@ rule.
 
 `TEDITIO.EXE` exercises File I/O (`loadfile` / `textwrite` in
 `src/FILEIO.C`). It links Core plus Status, Navigate, Edit, File
-I/O, Search, Prompt, Keyboard, and Strings, but deliberately not
-`VIDEO.OBJ`. Instead, the test file provides no-op `showline` and
-`showpage` stubs, so the file loading and saving code can run
-without the assembler display routines.
+I/O, Search, Prompt, Keyboard, Strings, and `THARNESS`, but
+deliberately not `VIDEO.OBJ`. `THARNESS` provides the guarded
+edit buffer and no-op `showline` / `showpage` stubs, so the file
+loading and saving code can run without the assembler display
+routines.
 
 The harness does not call `textedit`. It allocates an edit buffer
 of `MAXBYTES` bytes with a guard region on each side, fills the
@@ -121,15 +128,15 @@ which would hang an unattended test.
 
 ## Editor Navigate Tests (`TEDITNAV.EXE`)
 
-`TEDITNAV.EXE` uses the same Core-plus-modules link-with-stubs
-design and guard-banded buffer as `TEDITIO.EXE`, but instead of
-loading files it installs small documents directly in the editor's
-internal format (lines separated by carriage return and NUL, as
-produced by `loadfile` from a CRLF file), places the cursor by
-setting the editor globals, and calls individual Navigate
-functions such as `cursdown`, `nextword`, and `pagedown`. After
-each operation it asserts the exact buffer contents, the cursor
-position, the line number and count, and the guard bytes.
+`TEDITNAV.EXE` uses the same Core-plus-modules and `THARNESS`
+design as `TEDITIO.EXE`, but instead of loading files it installs
+small documents directly in the editor's internal format (lines
+separated by carriage return and NUL, as produced by `loadfile`
+from a CRLF file), places the cursor by setting the editor
+globals, and calls individual Navigate functions such as
+`cursdown`, `nextword`, and `pagedown`. After each operation it
+asserts the exact buffer contents, the cursor position, the line
+number and count, and the guard bytes.
 
 These tests verify buffer and cursor state only. The display
 routines are stubbed here; their cell output is covered by
@@ -154,10 +161,10 @@ failing probe is a reproducible finding to be fixed separately.
 
 ## Editor Edit Tests (`TEDITEDT.EXE`)
 
-`TEDITEDT.EXE` uses the same harness design as `TEDITNAV.EXE`,
-calling Edit functions such as `inschar`, `del`, and `delword`
-against installed documents and asserting buffer, cursor, and
-guard state after each operation.
+`TEDITEDT.EXE` uses the same Core-plus-modules and `THARNESS`
+design as `TEDITNAV.EXE`, calling Edit functions such as
+`inschar`, `del`, and `delword` against installed documents and
+asserting buffer, cursor, and guard state after each operation.
 
 With no command-line argument, `TEDITEDT` runs the green cases:
 
@@ -296,10 +303,8 @@ The following are intentionally not covered yet:
 - the nonexistent-file and read/write-error paths (see above);
 - the non-`VERSION_M` save variant;
 - Borland compiler warning cleanup;
-- extracting the duplicated editor-harness helpers (guarded
-  buffer, document install, cursor placement) into a shared
-  test `.C` / `.H` used by `TEDITIO`, `TEDITNAV`, `TEDITEDT`,
-  and `TEDITIN`;
+- folding `TEDITIN` destination-buffer guards into `THARNESS`
+  (buffer suites already share `THARNESS`; input suite does not);
 - renaming green/probe case IDs (`N` / `E` / `V` / `X` and
   peers) if clearer module-aligned names are wanted;
 - automated coverage of Core (`textedit`, `ctrlkey`, and

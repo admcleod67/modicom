@@ -18,34 +18,11 @@
 #include <string.h>
 
 #include "TEST.H"
+#include "THARNESS.H"
 #include "editor.h"
 #include "navigate.h"
 #include "strings.h"
 #include "video.h"
-
-#define GUARD_SIZE 16
-#define GUARD_BYTE 0xA5
-
-
-/* Display stubs: VIDEO.OBJ is deliberately not linked */
-
-void showline(char *str, char *endptr)
-{
-   (void) str;
-   (void) endptr;
-}
-
-
-void showpage(char *str, char *endptr)
-{
-   (void) str;
-   (void) endptr;
-}
-
-
-/* Harness state */
-
-static BYTE *rawbuffer;
 
 typedef void (*casefunc)(void);
 
@@ -64,131 +41,6 @@ static char doc_ls[]     = "longline\r\0ab\r\0cd";
 static char doc_words[]  = "foo bar baz\r\0qux";
 static char doc_spaces[] = "foo  bar";
 static char doc6[]       = "a1\r\0a2\r\0a3\r\0a4\r\0a5\r\0a6";
-
-
-static void fill_guards(void)
-{
-   int i;
-
-   for (i = 0; i < GUARD_SIZE; i ++)
-   {
-      rawbuffer[i] = GUARD_BYTE;
-      rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] = GUARD_BYTE;
-   }
-}
-
-
-static void reset_state(void)
-{
-   fill_guards();
-   memset(start, 0, MAXBYTES + 1);
-
-   ptr = start;
-   end = start;
-   x = MIN_COL;
-   y = MIN_ROW;
-   lineno = 1;
-   lcount = 0;
-   changed = FALSE;
-   insert = TRUE;
-   maxrow = 17;
-   toobig = FALSE;
-}
-
-
-static void check_guards(void)
-{
-   int i;
-   int bad;
-
-   bad = 0;
-
-   for (i = 0; i < GUARD_SIZE; i ++)
-   {
-      if (rawbuffer[i] != GUARD_BYTE)
-	 bad ++;
-
-      if (rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] != GUARD_BYTE)
-	 bad ++;
-   }
-
-   ASSERT_EQ_INT(0, bad);
-}
-
-
-static void check_invariants(void)
-{
-   ASSERT_TRUE(ptr >= start);
-   ASSERT_TRUE(ptr <= end);
-   ASSERT_TRUE(end <= start + MAXBYTES);
-   check_guards();
-}
-
-
-/* Install a document and reset all editor state around it */
-
-static void install_document(const char *doc, int len, int lines)
-{
-   reset_state();
-
-   memcpy(start, doc, len);
-   end = start + len;
-   *end = '\0';
-   lcount = lines;
-
-   ptr = start;
-   x = MIN_COL;
-   y = MIN_ROW;
-   lineno = 1;
-   changed = FALSE;
-}
-
-
-/* Place the cursor on the given line and column; row is the
-   screen row (y) to report */
-
-static void place_cursor(int line, int col, int row)
-{
-   BYTE *p;
-   int l;
-
-   p = start;
-
-   for (l = 1; l < line; l ++)
-   {
-      while (*p)
-	 p ++;
-
-      p ++;
-   }
-
-   ptr = p + (col - 1);
-   x = col;
-   y = row;
-   lineno = line;
-}
-
-
-/* Assert buffer contents, length, and terminator */
-
-static void check_buffer(const char *expected, int len)
-{
-   ASSERT_EQ_INT(len, (int) (end - start));
-   ASSERT_TRUE(memcmp(start, expected, len) == 0);
-   ASSERT_EQ_INT('\0', *end);
-}
-
-
-/* Assert cursor and document state together */
-
-static void check_state(int offset, int col, int row, int line, int count)
-{
-   ASSERT_EQ_INT(offset, (int) (ptr - start));
-   ASSERT_EQ_INT(col, x);
-   ASSERT_EQ_INT(row, y);
-   ASSERT_EQ_INT(line, lineno);
-   ASSERT_EQ_INT(count, lcount);
-}
 
 
 /* Navigation cases */
@@ -556,16 +408,11 @@ int main(int argc, char *argv[])
 
    printf("EDITOR NAVIGATE tests\n");
 
-   rawbuffer = (BYTE *) malloc((size_t) MAXBYTES + 1 +
-      (size_t) (2 * GUARD_SIZE));
-
-   if (rawbuffer == NULL)
+   if (harness_alloc() != 0)
    {
       printf("SETUP FAILURE: cannot allocate guarded edit buffer\n");
       return 2;
    }
-
-   start = rawbuffer + GUARD_SIZE;
 
    if (argc > 1)
    {
@@ -585,7 +432,7 @@ int main(int argc, char *argv[])
 	    printf(" %s", probe_cases[i].id);
 
 	 printf("\n");
-	 free(rawbuffer);
+	 harness_free();
 	 return 2;
       }
 
@@ -597,7 +444,7 @@ int main(int argc, char *argv[])
 	 run_case(&green_cases[i]);
    }
 
-   free(rawbuffer);
+   harness_free();
 
    return test_summary();
 }

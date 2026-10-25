@@ -13,37 +13,15 @@
 #include <string.h>
 
 #include "TEST.H"
+#include "THARNESS.H"
 #include "editor.h"
 #include "fileio.h"
 #include "strings.h"
 #include "video.h"
 
-#define GUARD_SIZE 16
-#define GUARD_BYTE 0xA5
-
 #define IN_PATH  "BUILD\\TESTS\\IN01.TXT"
 #define OUT_PATH "BUILD\\TESTS\\OUT01.TXT"
 
-
-/* Display stubs: VIDEO.OBJ is deliberately not linked */
-
-void showline(char *str, char *endptr)
-{
-   (void) str;
-   (void) endptr;
-}
-
-
-void showpage(char *str, char *endptr)
-{
-   (void) str;
-   (void) endptr;
-}
-
-
-/* Harness state */
-
-static BYTE *rawbuffer;
 
 typedef void (*casefunc)(void);
 
@@ -53,65 +31,6 @@ struct testcase
    const char *name;
    casefunc run;
 };
-
-
-static void fill_guards(void)
-{
-   int i;
-
-   for (i = 0; i < GUARD_SIZE; i ++)
-   {
-      rawbuffer[i] = GUARD_BYTE;
-      rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] = GUARD_BYTE;
-   }
-}
-
-
-static void reset_state(void)
-{
-   fill_guards();
-   memset(start, 0, MAXBYTES + 1);
-
-   ptr = start;
-   end = start;
-   x = MIN_COL;
-   y = MIN_ROW;
-   lineno = 1;
-   lcount = 0;
-   changed = FALSE;
-   insert = TRUE;
-   maxrow = 17;
-   toobig = FALSE;
-}
-
-
-static void check_guards(void)
-{
-   int i;
-   int bad;
-
-   bad = 0;
-
-   for (i = 0; i < GUARD_SIZE; i ++)
-   {
-      if (rawbuffer[i] != GUARD_BYTE)
-	 bad ++;
-
-      if (rawbuffer[GUARD_SIZE + MAXBYTES + 1 + i] != GUARD_BYTE)
-	 bad ++;
-   }
-
-   ASSERT_EQ_INT(0, bad);
-}
-
-
-static void check_invariants(void)
-{
-   ASSERT_TRUE(ptr >= start);
-   ASSERT_TRUE(ptr <= end);
-   ASSERT_TRUE(end <= start + MAXBYTES);
-   check_guards();
-}
 
 
 /* Fixture helpers */
@@ -352,19 +271,19 @@ static void case_empty_preceding_ctrlz(void)
 {
    /* Place Ctrl+Z immediately before the edit buffer, then load an
       empty file. Loading should not consult or modify that byte. */
-   rawbuffer[GUARD_SIZE - 1] = 0x1a;
+   harness_raw[GUARD_SIZE - 1] = 0x1a;
 
    ASSERT_TRUE(write_bytes(IN_PATH, "", 0));
    load_fixture();
 
    ASSERT_TRUE(end == start);
    ASSERT_EQ_INT(1, lcount);
-   ASSERT_EQ_INT(0x1a, rawbuffer[GUARD_SIZE - 1]);
+   ASSERT_EQ_INT(0x1a, harness_raw[GUARD_SIZE - 1]);
    ASSERT_EQ_INT('\0', *start);
 
    /* The planted byte has been checked; restore the guard pattern
       so the general guard check does not report it again. */
-   rawbuffer[GUARD_SIZE - 1] = GUARD_BYTE;
+   harness_raw[GUARD_SIZE - 1] = GUARD_BYTE;
 
    check_invariants();
 
@@ -526,16 +445,11 @@ int main(int argc, char *argv[])
 
    printf("EDITOR IO tests\n");
 
-   rawbuffer = (BYTE *) malloc((size_t) MAXBYTES + 1 +
-      (size_t) (2 * GUARD_SIZE));
-
-   if (rawbuffer == NULL)
+   if (harness_alloc() != 0)
    {
       printf("SETUP FAILURE: cannot allocate guarded edit buffer\n");
       return 2;
    }
-
-   start = rawbuffer + GUARD_SIZE;
 
    if (argc > 1)
    {
@@ -555,7 +469,7 @@ int main(int argc, char *argv[])
 	    printf(" %s", probe_cases[i].id);
 
 	 printf("\n");
-	 free(rawbuffer);
+	 harness_free();
 	 return 2;
       }
 
@@ -567,7 +481,7 @@ int main(int argc, char *argv[])
 	 run_case(&green_cases[i]);
    }
 
-   free(rawbuffer);
+   harness_free();
 
    return test_summary();
 }
