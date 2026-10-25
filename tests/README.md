@@ -307,9 +307,8 @@ The following are intentionally not covered yet:
   (buffer suites already share `THARNESS`; input suite does not);
 - renaming green/probe case IDs (`N` / `E` / `V` / `X` and
   peers) if clearer module-aligned names are wanted;
-- automated coverage of Core (`textedit`, `ctrlkey`, and
-  session abort);
-- a dedicated Status suite (no Status-only harness today).
+- Status and Core automated coverage (queue in
+  `docs/2.1-coverage.md`).
 
 Those items should be introduced separately, after this baseline,
 so that any failure can be attributed to a specific new test or

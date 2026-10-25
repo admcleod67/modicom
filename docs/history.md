@@ -87,10 +87,11 @@ modules; Keyboard, Strings, and Video remain as before. The green
 suites were then aligned to those modules: harnesses include the
 matching headers, and the former combined ops suite was split into
 `TEDITNAV` (Navigate) and `TEDITEDT` (Edit). Further test work
-still deferred — case-ID renames, Core and Status coverage, and
-the other items listed under Deferred Test Work in
-`tests/README.md` — remains separate follow-on. The buffer suites
-share a common `THARNESS` helper for the guarded edit buffer.
+still deferred — case-ID renames and the other items listed under
+Deferred Test Work in `tests/README.md` — remains separate
+follow-on. Closing Status and Core automated coverage is underway;
+see `docs/2.1-coverage.md`. The buffer suites share a common
+`THARNESS` helper for the guarded edit buffer.
 
 ## Development note: `SHOWPAGE.C`
 
