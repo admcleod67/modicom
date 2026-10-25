@@ -295,7 +295,16 @@ The following are intentionally not covered yet:
   investigation of the historically reported infrequent crash;
 - the nonexistent-file and read/write-error paths (see above);
 - the non-`VERSION_M` save variant;
-- Borland compiler warning cleanup.
+- Borland compiler warning cleanup;
+- extracting the duplicated editor-harness helpers (guarded
+  buffer, document install, cursor placement) into a shared
+  test `.C` / `.H` used by `TEDITIO`, `TEDITNAV`, `TEDITEDT`,
+  and `TEDITIN`;
+- renaming green/probe case IDs (`N` / `E` / `V` / `X` and
+  peers) if clearer module-aligned names are wanted;
+- automated coverage of Core (`textedit`, `ctrlkey`, and
+  session abort);
+- a dedicated Status suite (no Status-only harness today).
 
 Those items should be introduced separately, after this baseline,
 so that any failure can be attributed to a specific new test or
