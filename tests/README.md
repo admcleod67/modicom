@@ -23,16 +23,18 @@ The automated tests currently cover:
   described below;
 - status UI helpers in `src/STATUS.C` (`TSTATUS.EXE`), also
   described below;
+- Core `ctrlkey` dispatch in `src/TEXTEDIT.C` (`TCTRLKEY.EXE`),
+  also described below;
 - video display routines in `src/VIDEO.ASM` (`TVIDEO.EXE`), also
   described below.
 
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
 
-`TFILEIO`, `TNAVIGAT`, `TBUFFEDT`, and `TSTATUS` also link
-`THARNESS.OBJ` (`tests/THARNESS.C` / `THARNESS.H`) for the shared
-guarded edit buffer, document install helpers, and no-op
-`showline` / `showpage` stubs. `TEDITIN` keeps its own
+`TFILEIO`, `TNAVIGAT`, `TBUFFEDT`, `TSTATUS`, and `TCTRLKEY`
+also link `THARNESS.OBJ` (`tests/THARNESS.C` / `THARNESS.H`) for
+the shared guarded edit buffer, document install helpers, and
+no-op `showline` / `showpage` stubs. `TEDITIN` keeps its own
 destination-buffer guards and does not use `THARNESS`.
 
 The tests are not part of the production build. They are not listed
@@ -52,6 +54,7 @@ BUILD\TESTS\TNAVIGAT
 BUILD\TESTS\TBUFFEDT
 BUILD\TESTS\TEDITIN
 BUILD\TESTS\TSTATUS
+BUILD\TESTS\TCTRLKEY
 BUILD\TESTS\TVIDEO
 ```
 
@@ -265,6 +268,32 @@ With no command-line argument, `TSTATUS` runs the green cases:
 `helpscreen` content and `showstatus` (live modifier latch) are
 not covered yet.
 
+## Core ctrlkey Tests (`TCTRLKEY.EXE`)
+
+`TCTRLKEY.EXE` links the same Core-plus-modules and `THARNESS`
+set as the buffer suites and calls `ctrlkey()` directly (the
+production `K_CTRL_K` entry in `textedit` is not driven here).
+Command and prompt keys are pushed into the BIOS keyboard
+buffer before each call, as in `TSTATUS` / `TEDITIN`, without
+the timer-tick feeder.
+
+Cases pin Find / Find-again dispatch and the process-static
+search string via buffer and cursor globals. `readfile` /
+`writefile` via `ctrlkey`, and the `textedit` / abort session
+loop, are out of scope (see `docs/2.1-coverage.md`).
+
+With no command-line argument, `TCTRLKEY` runs the green cases:
+
+| ID | Case |
+|----|------|
+| `C1` | Find-again with empty search string misses and returns after Space |
+| `C2` | Find hit moves the cursor to the match |
+| `C3` | Find Escape leaves the cursor unchanged |
+| `C4` | Find miss leaves the cursor unchanged (Space clears `msg`) |
+| `C5` | Find then Find-again advances to the second match |
+| `C6` | Lowercase `f` Find alias behaves like `F` |
+| `C7` | Unknown second key is a no-op |
+
 ## Video Display Tests (`TVIDEO.EXE`)
 
 `TVIDEO.EXE` links the production `VIDEO.OBJ` — assembled from
@@ -337,9 +366,11 @@ The following are intentionally not covered yet:
   (buffer suites already share `THARNESS`; input suite does not);
 - renaming green/probe case IDs (`N` / `E` / `V` / `X` and
   peers) if clearer module-aligned names are wanted;
-- Core automated coverage and remaining Status gaps such as
-  `showstatus` / help-screen content (queue in
-  `docs/2.1-coverage.md`).
+- Core `textedit` / session abort coverage, and remaining
+  Status gaps such as `showstatus` / help-screen content
+  (queue in `docs/2.1-coverage.md`); `ctrlkey` Find paths are
+  covered by `TCTRLKEY`, but `ctrlkey` read/write file paths
+  are not.
 
 Those items should be introduced separately, after this baseline,
 so that any failure can be attributed to a specific new test or
