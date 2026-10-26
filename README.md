@@ -51,13 +51,25 @@ restructured:
 - `tests/` — automated tests and manual smoke-test notes
 - `MODICOM.PRJ` / `MODICOM.DSK` — Borland project files at the root
 
+### Documentation
+
+- [`docs/user-guide.md`](docs/user-guide.md) — how to run and
+  use the DOS editor
+- [`docs/design.md`](docs/design.md) — architecture and module
+  dependencies on `main`
+- [`docs/history.md`](docs/history.md) — version timeline and
+  release artifacts
+- [`BUILD.md`](BUILD.md) — rebuilding with the Borland toolchain
+- [`tests/README.md`](tests/README.md) — automated tests and
+  manual smoke checklist
+
 Future work on `main` may include:
 
 - Portability improvements
 - Linux support
 - Build system modernisation
 - Bug fixes
-- Documentation updates
+- Further documentation updates
 
 ## Original Environment
 
@@ -66,8 +78,8 @@ environments.
 
 Period toolsets and rebuild notes are in `BUILD.md`. On `main`, those
 notes describe the restructured 2.0-based source tree; each historic
-branch keeps notes matching its preserved layout. Version timeline
-and release artifacts are documented in `docs/history.md`.
+branch keeps notes matching its preserved layout. See also
+`docs/history.md` and the documentation links above.
 
 ## Building
 
