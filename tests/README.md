@@ -21,17 +21,19 @@ The automated tests currently cover:
 - keyboard input in `src/KEYBOARD.C`, `prompt` in `src/PROMPT.C`,
   and `findprompt` in `src/SEARCH.C` (`TEDITIN.EXE`), also
   described below;
+- status UI helpers in `src/STATUS.C` (`TSTATUS.EXE`), also
+  described below;
 - video display routines in `src/VIDEO.ASM` (`TVIDEO.EXE`), also
   described below.
 
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
 
-`TFILEIO`, `TNAVIGAT`, and `TBUFFEDT` also link `THARNESS.OBJ`
-(`tests/THARNESS.C` / `THARNESS.H`) for the shared guarded edit
-buffer, document install helpers, and no-op `showline` /
-`showpage` stubs. `TEDITIN` keeps its own destination-buffer
-guards and does not use `THARNESS`.
+`TFILEIO`, `TNAVIGAT`, `TBUFFEDT`, and `TSTATUS` also link
+`THARNESS.OBJ` (`tests/THARNESS.C` / `THARNESS.H`) for the shared
+guarded edit buffer, document install helpers, and no-op
+`showline` / `showpage` stubs. `TEDITIN` keeps its own
+destination-buffer guards and does not use `THARNESS`.
 
 The tests are not part of the production build. They are not listed
 in the root `MAKEFILE` release objects or in `MODICOM.PRJ`, and no
@@ -49,6 +51,7 @@ BUILD\TESTS\TFILEIO
 BUILD\TESTS\TNAVIGAT
 BUILD\TESTS\TBUFFEDT
 BUILD\TESTS\TEDITIN
+BUILD\TESTS\TSTATUS
 BUILD\TESTS\TVIDEO
 ```
 
@@ -235,6 +238,33 @@ A `prompt` message long enough to make its computed length limit
 zero or negative is out of scope: no production message is longer
 than 17 characters, so that path cannot be reached today.
 
+## Status Tests (`TSTATUS.EXE`)
+
+`TSTATUS.EXE` links the same Core-plus-modules and `THARNESS`
+set as the buffer suites and exercises Status helpers in
+`src/STATUS.C`. Display stubs come from `THARNESS` (no
+`VIDEO.OBJ`). Status-line text is checked by reading colour text
+RAM after each call; `helptoggle` is checked via `maxrow` / `y`
+only (help-screen content is not asserted).
+
+`msg` waits for Space: the suite pushes one Space into the BIOS
+keyboard buffer before the call (same path as `TEDITIN`, without
+the timer-tick feeder).
+
+With no command-line argument, `TSTATUS` runs the green cases:
+
+| ID | Case |
+|----|------|
+| `S1` | `helptoggle` switches `maxrow` between 17 and 24; `y` becomes 1 |
+| `S2` | `showpos` shows the current line and column on the status line |
+| `S3` | `scoreboard` with a short file name shows `Edit: ` plus the name |
+| `S4` | `scoreboard` when `toobig` shows the truncated-file message |
+| `S5` | `statmsg` shows Ins/Caps (and blank Num) for constructed bits |
+| `S6` | `msg` returns after a scripted Space |
+
+`helpscreen` content and `showstatus` (live modifier latch) are
+not covered yet.
+
 ## Video Display Tests (`TVIDEO.EXE`)
 
 `TVIDEO.EXE` links the production `VIDEO.OBJ` — assembled from
@@ -307,7 +337,8 @@ The following are intentionally not covered yet:
   (buffer suites already share `THARNESS`; input suite does not);
 - renaming green/probe case IDs (`N` / `E` / `V` / `X` and
   peers) if clearer module-aligned names are wanted;
-- Status and Core automated coverage (queue in
+- Core automated coverage and remaining Status gaps such as
+  `showstatus` / help-screen content (queue in
   `docs/2.1-coverage.md`).
 
 Those items should be introduced separately, after this baseline,
