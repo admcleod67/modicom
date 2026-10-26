@@ -25,16 +25,20 @@ The automated tests currently cover:
   described below;
 - Core `ctrlkey` dispatch in `src/TEXTEDIT.C` (`TCTRLKEY.EXE`),
   also described below;
+- Core `textedit` / session abort in `src/TEXTEDIT.C`
+  (`TSESSION.EXE`), also described below;
 - video display routines in `src/VIDEO.ASM` (`TVIDEO.EXE`), also
   described below.
 
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
 
-`TFILEIO`, `TNAVIGAT`, `TBUFFEDT`, `TSTATUS`, and `TCTRLKEY`
-also link `THARNESS.OBJ` (`tests/THARNESS.C` / `THARNESS.H`) for
-the shared guarded edit buffer, document install helpers, and
-no-op `showline` / `showpage` stubs. `TEDITIN` keeps its own
+`TFILEIO`, `TNAVIGAT`, `TBUFFEDT`, `TSTATUS`, `TCTRLKEY`, and
+`TSESSION` also link `THARNESS.OBJ` (`tests/THARNESS.C` /
+`THARNESS.H`) for no-op `showline` / `showpage` stubs (and, for
+the buffer suites, the shared guarded edit buffer and document
+install helpers). `TSESSION` does not call `harness_alloc`:
+`textedit` owns its own buffer. `TEDITIN` keeps its own
 destination-buffer guards and does not use `THARNESS`.
 
 The tests are not part of the production build. They are not listed
@@ -55,6 +59,7 @@ BUILD\TESTS\TBUFFEDT
 BUILD\TESTS\TEDITIN
 BUILD\TESTS\TSTATUS
 BUILD\TESTS\TCTRLKEY
+BUILD\TESTS\TSESSION
 BUILD\TESTS\TVIDEO
 ```
 
@@ -279,8 +284,8 @@ the timer-tick feeder.
 
 Cases pin Find / Find-again dispatch and the process-static
 search string via buffer and cursor globals. `readfile` /
-`writefile` via `ctrlkey`, and the `textedit` / abort session
-loop, are out of scope (see `docs/2.1-coverage.md`).
+`writefile` via `ctrlkey` remain out of scope here (session
+save/abort is covered by `TSESSION`).
 
 With no command-line argument, `TCTRLKEY` runs the green cases:
 
@@ -293,6 +298,28 @@ With no command-line argument, `TCTRLKEY` runs the green cases:
 | `C5` | Find then Find-again advances to the second match |
 | `C6` | Lowercase `f` Find alias behaves like `F` |
 | `C7` | Unknown second key is a no-op |
+
+## Core textedit / session Tests (`TSESSION.EXE`)
+
+`TSESSION.EXE` links the same Core-plus-modules and `THARNESS`
+set (stubs only; no `harness_alloc`) and calls `textedit()` with
+a short BIOS keyboard script. Observables after return are the
+return code, the `changed` flag, and disk side effects — not the
+edit buffer (`textedit` frees it before returning).
+
+Paths use a temporary file under `BUILD\TESTS\` with an
+extension so load does not append `.prg`. Missing files give an
+empty session without a Space-wait. Ctrl-K, Find, file prompts,
+and help-screen content are out of scope.
+
+With no command-line argument, `TSESSION` runs the green cases:
+
+| ID | Case |
+|----|------|
+| `E1` | Clean Esc: return 0, `changed` false, no file written |
+| `E2` | Dirty Esc+Y: abort without writing; `changed` stays true |
+| `E3` | Dirty Esc+N then Esc+Y: decline abort, then abort; no file |
+| `E4` | Dirty Ctrl-End: writes one byte `A` (`VERSION_M`) and quits |
 
 ## Video Display Tests (`TVIDEO.EXE`)
 
@@ -366,11 +393,9 @@ The following are intentionally not covered yet:
   (buffer suites already share `THARNESS`; input suite does not);
 - renaming green/probe case IDs (`N` / `E` / `V` / `X` and
   peers) if clearer module-aligned names are wanted;
-- Core `textedit` / session abort coverage, and remaining
-  Status gaps such as `showstatus` / help-screen content
-  (queue in `docs/2.1-coverage.md`); `ctrlkey` Find paths are
-  covered by `TCTRLKEY`, but `ctrlkey` read/write file paths
-  are not.
+- remaining Status gaps such as `showstatus` / help-screen
+  content; `ctrlkey` read/write file paths (Find paths are in
+  `TCTRLKEY`; session save/abort is in `TSESSION`).
 
 Those items should be introduced separately, after this baseline,
 so that any failure can be attributed to a specific new test or

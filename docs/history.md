@@ -91,10 +91,13 @@ to those modules: harnesses include the matching headers, and the
 former combined ops suite was split into `TNAVIGAT` (Navigate) and
 `TBUFFEDT` (Buffedit). Further test work still deferred — case-ID
 renames and the other items listed under Deferred Test Work in
-`tests/README.md` — remains separate follow-on. Closing Status and
-Core automated coverage is underway; see `docs/2.1-coverage.md`.
-The buffer suites share a common `THARNESS` helper for the guarded
-edit buffer.
+`tests/README.md` — remains separate follow-on. Status and Core
+session coverage were closed with green suites: `TSTATUS`
+(Status helpers), `TCTRLKEY` (`ctrlkey` Find paths), and
+`TSESSION` (`textedit` load/loop quit and abort). The buffer
+suites share a common `THARNESS` helper for the guarded edit
+buffer; `TSESSION` links those display stubs but lets `textedit`
+own its buffer.
 
 ## Development note: `SHOWPAGE.C`
 
