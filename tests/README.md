@@ -12,11 +12,11 @@ The automated tests currently cover:
 - the string routines in `src/STRINGS.C` (`TSTRINGS.EXE`):
   `replace`, `rtrim`, and `linelen`, including CR and xBase soft
   carriage return (`0x8d`) line endings;
-- editor file loading and saving in `src/FILEIO.C` (`TEDITIO.EXE`),
+- editor file loading and saving in `src/FILEIO.C` (`TFILEIO.EXE`),
   described below;
 - cursor and paging operations in `src/NAVIGATE.C`
-  (`TEDITNAV.EXE`), also described below;
-- editing operations in `src/BUFFEDIT.C` (`TEDITEDT.EXE`), also
+  (`TNAVIGAT.EXE`), also described below;
+- editing operations in `src/BUFFEDIT.C` (`TBUFFEDT.EXE`), also
   described below;
 - keyboard input in `src/KEYBOARD.C`, `prompt` in `src/PROMPT.C`,
   and `findprompt` in `src/SEARCH.C` (`TEDITIN.EXE`), also
@@ -27,7 +27,7 @@ The automated tests currently cover:
 The test harness in `TEST.H` is a small set of Borland-compatible
 assertion macros. It uses no external test framework.
 
-`TEDITIO`, `TEDITNAV`, and `TEDITEDT` also link `THARNESS.OBJ`
+`TFILEIO`, `TNAVIGAT`, and `TBUFFEDT` also link `THARNESS.OBJ`
 (`tests/THARNESS.C` / `THARNESS.H`) for the shared guarded edit
 buffer, document install helpers, and no-op `showline` /
 `showpage` stubs. `TEDITIN` keeps its own destination-buffer
@@ -45,9 +45,9 @@ directory on `PATH`, run:
 ```text
 MAKE -f TESTS\TESTS.MAK rebuild
 BUILD\TESTS\TSTRINGS
-BUILD\TESTS\TEDITIO
-BUILD\TESTS\TEDITNAV
-BUILD\TESTS\TEDITEDT
+BUILD\TESTS\TFILEIO
+BUILD\TESTS\TNAVIGAT
+BUILD\TESTS\TBUFFEDT
 BUILD\TESTS\TEDITIN
 BUILD\TESTS\TVIDEO
 ```
@@ -73,9 +73,9 @@ Test objects and executables are written under `build/tests/`,
 which is covered by the repository's existing `/build/` ignore
 rule.
 
-## Editor IO Tests (`TEDITIO.EXE`)
+## File I/O Tests (`TFILEIO.EXE`)
 
-`TEDITIO.EXE` exercises File I/O (`loadfile` / `textwrite` in
+`TFILEIO.EXE` exercises File I/O (`loadfile` / `textwrite` in
 `src/FILEIO.C`). It links Core plus Status, Navigate, Edit, File
 I/O, Search, Prompt, Keyboard, Strings, and `THARNESS`, but
 deliberately not `VIDEO.OBJ`. `THARNESS` provides the guarded
@@ -93,7 +93,7 @@ write usually corrupts memory silently rather than faulting, so an
 unchanged guard is the evidence that an operation stayed within
 the buffer.
 
-With no command-line argument, `TEDITIO` runs the safe cases:
+With no command-line argument, `TFILEIO` runs the safe cases:
 loading empty, one-byte, CRLF, LF-only, soft-CR, no-trailing-
 newline, and Ctrl+Z-terminated files, an empty file with a Ctrl+Z
 byte immediately before the buffer, full and oversized loads at
@@ -106,7 +106,7 @@ A single boundary probe can be run by passing its identifier, for
 example:
 
 ```text
-BUILD\TESTS\TEDITIO P8
+BUILD\TESTS\TFILEIO P8
 ```
 
 Each probe runs in its own process, so a hang or memory corruption
@@ -126,10 +126,10 @@ The nonexistent-file and read/write-error paths are not covered:
 on error the editor displays a message and waits for a keypress,
 which would hang an unattended test.
 
-## Editor Navigate Tests (`TEDITNAV.EXE`)
+## Navigate Tests (`TNAVIGAT.EXE`)
 
-`TEDITNAV.EXE` uses the same Core-plus-modules and `THARNESS`
-design as `TEDITIO.EXE`, but instead of loading files it installs
+`TNAVIGAT.EXE` uses the same Core-plus-modules and `THARNESS`
+design as `TFILEIO.EXE`, but instead of loading files it installs
 small documents directly in the editor's internal format (lines
 separated by carriage return and NUL, as produced by `loadfile`
 from a CRLF file), places the cursor by setting the editor
@@ -143,7 +143,7 @@ routines are stubbed here; their cell output is covered by
 `TVIDEO.EXE` below, and interactive appearance by the manual
 smoke test.
 
-With no command-line argument, `TEDITNAV` runs the green cases:
+With no command-line argument, `TNAVIGAT` runs the green cases:
 
 | Prefix | Group |
 |--------|-------|
@@ -151,7 +151,7 @@ With no command-line argument, `TEDITNAV` runs the green cases:
 | `V` | Paging: `pageup` and `pagedown` on a six-line document |
 
 A single boundary probe can be run by passing its identifier, for
-example `BUILD\TESTS\TEDITNAV X1`. As with the IO probes, a
+example `BUILD\TESTS\TNAVIGAT X1`. As with the IO probes, a
 failing probe is a reproducible finding to be fixed separately.
 
 | ID | Probe |
@@ -159,21 +159,21 @@ failing probe is a reproducible finding to be fixed separately.
 | X1 | Beginning of line on the first line |
 | X2 | Last word at the start of the buffer |
 
-## Editor Edit Tests (`TEDITEDT.EXE`)
+## Buffedit Tests (`TBUFFEDT.EXE`)
 
-`TEDITEDT.EXE` uses the same Core-plus-modules and `THARNESS`
-design as `TEDITNAV.EXE`, calling Buffedit functions such as
+`TBUFFEDT.EXE` uses the same Core-plus-modules and `THARNESS`
+design as `TNAVIGAT.EXE`, calling Buffedit functions such as
 `inschar`, `del`, and `delword` against installed documents and
 asserting buffer, cursor, and guard state after each operation.
 
-With no command-line argument, `TEDITEDT` runs the green cases:
+With no command-line argument, `TBUFFEDT` runs the green cases:
 
 | Prefix | Group |
 |--------|-------|
 | `E` | Editing: insert (including near-full buffer), overwrite, newline, delete (including at buffer end), backspace, tab |
 
 A single boundary probe can be run by passing its identifier, for
-example `BUILD\TESTS\TEDITEDT X3`. As with the other probes, a
+example `BUILD\TESTS\TBUFFEDT X3`. As with the other probes, a
 failing probe is a reproducible finding to be fixed separately.
 
 | ID | Probe |

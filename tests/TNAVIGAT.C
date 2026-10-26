@@ -1,4 +1,4 @@
-/* Editor navigate tests for ModiCom.
+/* Navigate tests for ModiCom.
  *
  * Links Core and Navigate (plus the other editor modules) with
  * stubbed display routines and calls individual cursor and paging
@@ -406,7 +406,7 @@ int main(int argc, char *argv[])
    unsigned int i;
    struct testcase *only;
 
-   printf("EDITOR NAVIGATE tests\n");
+   printf("NAVIGATE tests\n");
 
    if (harness_alloc() != 0)
    {

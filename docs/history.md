@@ -88,8 +88,8 @@ later renamed to `TEXTEDIT.C` (matching `textedit`) and the buffer
 mutation module to `BUFFEDIT.C` / `BUFFEDIT.H`, keeping shared
 `EDITOR.H` for constants and globals. The green suites were aligned
 to those modules: harnesses include the matching headers, and the
-former combined ops suite was split into `TEDITNAV` (Navigate) and
-`TEDITEDT` (Buffedit). Further test work still deferred — case-ID
+former combined ops suite was split into `TNAVIGAT` (Navigate) and
+`TBUFFEDT` (Buffedit). Further test work still deferred — case-ID
 renames and the other items listed under Deferred Test Work in
 `tests/README.md` — remains separate follow-on. Closing Status and
 Core automated coverage is underway; see `docs/2.1-coverage.md`.

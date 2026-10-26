@@ -1,4 +1,4 @@
-/* Editor file IO tests for ModiCom.
+/* File I/O tests for ModiCom.
  *
  * Links Core and File I/O (plus the other editor modules) with
  * stubbed display routines and a guard-banded edit buffer. With
@@ -443,7 +443,7 @@ int main(int argc, char *argv[])
    unsigned int i;
    struct testcase *only;
 
-   printf("EDITOR IO tests\n");
+   printf("FILE IO tests\n");
 
    if (harness_alloc() != 0)
    {

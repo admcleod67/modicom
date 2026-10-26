@@ -1,8 +1,8 @@
-/* Editor edit tests for ModiCom.
+/* Buffedit tests for ModiCom.
  *
- * Links Core and Edit (plus the other editor modules) with stubbed
- * display routines and calls individual editing functions directly
- * against a guard-banded edit buffer. With no command-line
+ * Links Core and Buffedit (plus the other editor modules) with
+ * stubbed display routines and calls individual editing functions
+ * directly against a guard-banded edit buffer. With no command-line
  * argument, runs the safe (green) cases. With a case identifier
  * argument, runs only that boundary probe, so a hang or memory
  * corruption in one probe cannot hide the results of the others.
@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
    unsigned int i;
    struct testcase *only;
 
-   printf("EDITOR EDIT tests\n");
+   printf("BUFFEDIT tests\n");
 
    if (harness_alloc() != 0)
    {
