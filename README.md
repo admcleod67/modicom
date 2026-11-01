@@ -57,6 +57,8 @@ restructured:
   use the DOS editor
 - [`docs/design.md`](docs/design.md) — architecture and module
   dependencies on `main`
+- [`docs/host-build.md`](docs/host-build.md) — planned host /
+  modern-tooling build (CLion, Make, C video backend)
 - [`docs/history.md`](docs/history.md) — version timeline and
   release artifacts
 - [`BUILD.md`](BUILD.md) — rebuilding with the Borland toolchain
