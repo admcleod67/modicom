@@ -1,13 +1,24 @@
-#include <stdio.h>
-#include <conio.h>
+/***
+*
+*  Buffer insert, delete, and related edits for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
+#include <conio.h>
+
 #include "editor.h"
 #include "buffedit.h"
 #include "navigate.h"
 #include "strings.h"
 #include "video.h"
 
+
+/* Insert or overwrite a character at the cursor */
 
 void inschar(int ch)
 {
@@ -43,6 +54,9 @@ void inschar(int ch)
       }
    }
 }
+
+
+/* Delete the current line */
 
 void del(void)
 {
@@ -83,6 +97,9 @@ void del(void)
       changed = TRUE;
    }
 }
+
+
+/* Insert a newline or move to the next line */
 
 void newline(int insert)
 {
@@ -127,6 +144,9 @@ void newline(int insert)
    }
 }
 
+
+/* Insert a blank line at the cursor */
+
 void addline(void)
 {
    if ((end + 1) < (start + MAXBYTES))
@@ -149,6 +169,9 @@ void addline(void)
       changed = TRUE;
    }
 }
+
+
+/* Delete the character before the cursor */
 
 void backspace(void)
 {
@@ -201,6 +224,9 @@ void backspace(void)
    }
 }
 
+
+/* Delete the character under the cursor */
+
 void delchar(void)
 {
    int len;
@@ -237,6 +263,9 @@ void delchar(void)
    }
 }
 
+
+/* Delete the word at the cursor */
+
 void delword(void)
 {
    BYTE *str;
@@ -271,6 +300,9 @@ void delword(void)
       changed = TRUE;
    }
 }
+
+
+/* Insert spaces or advance to the next tab stop */
 
 void tabulate(void)
 {

@@ -1,8 +1,19 @@
+/***
+*
+*  Keyboard input helpers for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
+#include <ctype.h>
 #include <bios.h>
 #include <conio.h>
-#include <ctype.h>
+
 #include "keyboard.h"
 
+
+/* Return the next key, or zero if none is waiting */
 
 unsigned getkey(void)
 {
@@ -16,6 +27,8 @@ unsigned getkey(void)
    return 0;
 }
 
+
+/* Edit a single line; Return or Escape ends input */
 
 unsigned getline(char *str, int x, int y, int maxlen)
 {

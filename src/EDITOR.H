@@ -1,3 +1,11 @@
+/***
+*
+*  Shared editor constants and globals for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #ifndef EDITOR_H
 #define EDITOR_H
 

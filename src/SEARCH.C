@@ -1,11 +1,22 @@
-#include <conio.h>
+/***
+*
+*  Find prompt and forward search for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #include <string.h>
+#include <conio.h>
+
 #include "editor.h"
-#include "search.h"
 #include "prompt.h"
+#include "search.h"
 #include "status.h"
 #include "video.h"
 
+
+/* Prompt for a search string; copy it only when accepted */
 
 int findprompt(char *srchstr)
 {
@@ -17,6 +28,9 @@ int findprompt(char *srchstr)
    strcpy(srchstr, buf);
    return 1;
 }
+
+
+/* Search forward from after the cursor */
 
 int find(char *srchstr)
 {
@@ -49,6 +63,7 @@ int find(char *srchstr)
 
    found = FALSE;
 
+   /* Scan the buffer for the search string */
    if (*srchstr)
    {
       while (str != end)
@@ -71,6 +86,7 @@ int find(char *srchstr)
 
    if (found)
    {
+      /* Move the cursor to the match; repaint if off the page */
       ptr = str;
       while (ptr != start)
       {

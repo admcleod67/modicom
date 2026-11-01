@@ -1,6 +1,6 @@
 ;---------------------------------------------------------------
-;          Video support routines for ModiCom editor
-;           Copyright (c) 1994-2026, Allan McLeod
+; Video support routines for ModiCom editor
+; Copyright (c) 1994-2026 Allan McLeod
 ;---------------------------------------------------------------
 
 

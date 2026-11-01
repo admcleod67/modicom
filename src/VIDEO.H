@@ -1,3 +1,11 @@
+/***
+*
+*  Video display prototypes for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #ifndef VIDEO_H
 #define VIDEO_H
 

@@ -1,9 +1,20 @@
-#include <conio.h>
+/***
+*
+*  Single-line status prompts for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #include <string.h>
-#include "prompt.h"
+#include <conio.h>
+
 #include "keyboard.h"
+#include "prompt.h"
 #include "strings.h"
 
+
+/* Prompt on the status line and return non-zero if accepted */
 
 int prompt(char *msg, char *str)
 {

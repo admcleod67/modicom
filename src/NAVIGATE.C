@@ -1,10 +1,21 @@
-#include <conio.h>
+/***
+*
+*  Cursor motion and paging for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #include <ctype.h>
+#include <conio.h>
+
 #include "editor.h"
 #include "navigate.h"
 #include "strings.h"
 #include "video.h"
 
+
+/* Move the cursor up one line */
 
 void lineup(void)
 {
@@ -29,6 +40,9 @@ void lineup(void)
     lineno --;
 }
 
+
+/* Move the cursor down one line */
+
 int linedown(void)
 {
    while (*(ptr ++));
@@ -48,6 +62,9 @@ int linedown(void)
    return 1;
 }
 
+
+/* Place the cursor on a column within the current line */
+
 void gotocol(int col)
 {
    int len;
@@ -56,6 +73,9 @@ void gotocol(int col)
    x = (col > len) ? len + 1 : col;
    ptr += (x - 1);
 }
+
+
+/* Move up a line, preserving column when possible */
 
 void cursup(void)
 {
@@ -66,6 +86,9 @@ void cursup(void)
    }
 }
 
+
+/* Move down a line, preserving column when possible */
+
 void cursdown(void)
 {
    if (lineno < lcount)
@@ -74,6 +97,9 @@ void cursdown(void)
       gotocol(x);
    }
 }
+
+
+/* Move the cursor one character left */
 
 void cursleft(void)
 {
@@ -92,6 +118,9 @@ void cursleft(void)
    }
 }
 
+
+/* Move the cursor one character right */
+
 void cursright(void)
 {
    if ((ptr != end) && (x < 80))
@@ -109,6 +138,9 @@ void cursright(void)
    }
 }
 
+
+/* Advance the pointer down a number of rows */
+
 int gotorow(int row)
 {
    int i;
@@ -123,6 +155,9 @@ int gotorow(int row)
 
    return (i ? i - 1: 0);
 }
+
+
+/* Page the display upward */
 
 void pageup(void)
 {
@@ -155,6 +190,9 @@ void pageup(void)
    }
 }
 
+
+/* Page the display downward */
+
 void pagedown(void)
 {
    int i;
@@ -172,6 +210,9 @@ void pagedown(void)
 	 y = MIN_ROW;
    }
 }
+
+
+/* Scroll the display up one line below the cursor */
 
 void scrollup(void)
 {
@@ -198,6 +239,9 @@ void scrollup(void)
       showline(str, end);
    }
 }
+
+
+/* Move to the next word */
 
 void nextword(void)
 {
@@ -226,6 +270,9 @@ void nextword(void)
    }
 }
 
+
+/* Move to the previous word */
+
 void lastword(void)
 {
    while (ptr > start)
@@ -251,6 +298,9 @@ void lastword(void)
    }
 }
 
+
+/* Move to the end of the current line */
+
 void gotoeol(void)
 {
    while (!iseol(*ptr) && x < 80)
@@ -259,6 +309,9 @@ void gotoeol(void)
       x ++;
    }
 }
+
+
+/* Move to the beginning of the current line */
 
 void gotobol(void)
 {

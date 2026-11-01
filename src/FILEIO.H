@@ -1,3 +1,11 @@
+/***
+*
+*  File I/O function prototypes for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #ifndef FILEIO_H
 #define FILEIO_H
 

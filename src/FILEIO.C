@@ -1,22 +1,34 @@
-#include <io.h>
-#include <dir.h>
-#include <conio.h>
-#include <fcntl.h>
-#include <sys\stat.h>
+/***
+*
+*  Load, save, and in-session read/write for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #include <string.h>
+#include <conio.h>
+#include <dir.h>
+#include <fcntl.h>
+#include <io.h>
+#include <sys\stat.h>
+
 #include "editor.h"
 #include "fileio.h"
+#include "prompt.h"
 #include "status.h"
 #include "strings.h"
 #include "video.h"
-#include "prompt.h"
 
+
+/* Write the edit buffer to disk */
 
 void textwrite(char *fname)
 {
    int out;
    char *ptr;
 
+   /* Convert in-memory NULs to LF for the file image */
    replace(start, (unsigned) (end - start), '\0', '\n');
 
    #ifndef VERSION_M
@@ -37,6 +49,9 @@ void textwrite(char *fname)
    close(out);
 }
 
+
+/* Read a file into the edit buffer */
+
 unsigned textread(char *fname, int create)
 {
    char drive[MAXDRIVE], dir[MAXDIR], file[MAXFILE], ext[MAXEXT];
@@ -46,6 +61,7 @@ unsigned textread(char *fname, int create)
    if (!(fnsplit(fname, drive, dir, file, ext) & EXTENSION))
       strcat(fname, ".prg");
 
+   /* Open the file; missing files are quiet when create is set */
    if ((in = open(fname, O_RDONLY | O_BINARY)) == -1)
    {
       if (!create)
@@ -85,11 +101,15 @@ unsigned textread(char *fname, int create)
 
    close(in);
 
+   /* Strip a trailing Ctrl+Z if present */
    if ((total > 0) && (*(ptr + total - 1) == 26))
       total --;
 
    return total;
 }
+
+
+/* Load a file as the session document */
 
 void loadfile(char *fname)
 {
@@ -112,6 +132,9 @@ void loadfile(char *fname)
 
    *end = '\0';
 }
+
+
+/* Prompt for a file and insert it at the cursor */
 
 void readfile(void)
 {
@@ -144,6 +167,9 @@ void readfile(void)
 
    scoreboard();
 }
+
+
+/* Prompt for a name and write the buffer to that file */
 
 void writefile(void)
 {

@@ -1,3 +1,11 @@
+/***
+*
+*  Status and help function prototypes for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #ifndef STATUS_H
 #define STATUS_H
 

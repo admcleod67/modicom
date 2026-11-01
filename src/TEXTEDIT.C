@@ -1,25 +1,38 @@
+/***
+*
+*  Session loop, Ctrl+K commands, and abort for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #include <stdio.h>
-#include <conio.h>
-#include <bios.h>
-#include <alloc.h>
 #include <string.h>
+#include <alloc.h>
+#include <bios.h>
+#include <conio.h>
+
 #include "editor.h"
-#include "keyboard.h"
-#include "video.h"
-#include "status.h"
-#include "navigate.h"
 #include "buffedit.h"
 #include "fileio.h"
+#include "keyboard.h"
+#include "navigate.h"
 #include "search.h"
+#include "status.h"
+#include "video.h"
 
 BYTE *start, *ptr, *end, fname[MAXPATH];
 int x, y, lineno, lcount, changed, insert, maxrow, toobig;
+
+
+/* Handle Ctrl+K secondary commands */
 
 void ctrlkey(void)
 {
    static char srchstr[MAXSEARCH + 1] = "\0";
    unsigned key;
 
+   /* Wait for the command key after Ctrl+K */
    while(!(key = getkey()));
 
    switch (key)
@@ -63,12 +76,16 @@ void ctrlkey(void)
    }
 }
 
+
+/* Confirm abort when the buffer is dirty */
+
 static int abortedit(void)
 {
    int key;
 
    if (changed)
    {
+      /* Ask whether to discard changes */
       window(1, 1, 40, 1);
       cputs("Abort editing? (Y/N) ");
       clreol();
@@ -87,10 +104,14 @@ static int abortedit(void)
    return TRUE;
 }
 
+
+/* Run an editing session for the named file */
+
 int textedit(char *name)
 {
    int key, stop, bytes;
 
+   /* Allocate the edit buffer and set defaults */
    start = malloc(MAXBYTES + 1);
 
    strcpy(fname, name);
@@ -106,6 +127,7 @@ int textedit(char *name)
    stop = FALSE;
    toobig = FALSE;
 
+   /* Clear the screen, show help, load the file, and paint */
    textattr(LIGHTGRAY);
    clrscr();
    helpscreen();
@@ -114,6 +136,7 @@ int textedit(char *name)
    gotoxy(x, y);
    showpage(ptr, end);
 
+   /* Main editing loop */
    do
    {
       showpos();

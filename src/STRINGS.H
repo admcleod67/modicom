@@ -1,3 +1,11 @@
+/***
+*
+*  String helpers and end-of-line macro for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #ifndef STRINGS_H
 #define STRINGS_H
 

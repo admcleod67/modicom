@@ -1,10 +1,20 @@
+/***
+*
+*  Program entry and usage banner for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
-#include <dos.h>
+
 #include "editor.h"
 
+
+/* Display command line help information */
 
 void showuse(int parameters)
 {
@@ -26,6 +36,7 @@ void showuse(int parameters)
 }
 
 
+/* Main routine */
 
 int main(int argc, char *argv[])
 {

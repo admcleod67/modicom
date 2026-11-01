@@ -1,3 +1,11 @@
+/***
+*
+*  Key codes and keyboard prototypes for ModiCom.
+*
+*  Copyright (c) 1994-2026 Allan McLeod
+*
+*/
+
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
